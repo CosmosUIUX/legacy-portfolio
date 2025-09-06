@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Legacy logo - exact recreation from provided image -->
+  <g fill="none" stroke="#8B9A5B" stroke-width="12" stroke-linecap="square" stroke-linejoin="miter">
+    <!-- Large outer rectangle (tallest) -->
+    <rect x="50" y="60" width="80" height="140"/>
+    
+    <!-- Large bottom rectangle (widest) -->
+    <rect x="120" y="140" width="130" height="100"/>
+    
+    <!-- Inner square overlapping in middle -->
+    <rect x="120" y="120" width="60" height="60"/>
+    
+    <!-- Circle positioned in upper area -->
+    <circle cx="180" cy="100" r="50"/>
+    
+    <!-- Horizontal line through circle -->
+    <line x1="130" y1="100" x2="230" y2="100"/>
+    
+    <!-- Vertical line through circle -->
+    <line x1="180" y1="50" x2="180" y2="150"/>
+  </g>
+</svg>

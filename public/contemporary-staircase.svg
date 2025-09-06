@@ -1,0 +1,118 @@
+<svg width="800" height="1000" viewBox="0 0 800 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wallGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="woodGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d4a574;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#c19a5a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b8904f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background walls -->
+  <rect width="800" height="1000" fill="url(#wallGradient)"/>
+  
+  <!-- Main staircase structure -->
+  <!-- Lower staircase -->
+  <g transform="translate(100, 600)">
+    <!-- Steps -->
+    <rect x="0" y="0" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-40" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-80" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-120" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-160" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    
+    <!-- Risers -->
+    <rect x="0" y="-10" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-50" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-90" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-130" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-170" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+  </g>
+  
+  <!-- Upper staircase -->
+  <g transform="translate(400, 400)">
+    <!-- Steps -->
+    <rect x="0" y="0" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-40" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-80" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-120" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    <rect x="0" y="-160" width="200" height="30" fill="url(#woodGradient)" rx="2"/>
+    
+    <!-- Risers -->
+    <rect x="0" y="-10" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-50" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-90" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-130" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+    <rect x="0" y="-170" width="200" height="40" fill="#e9ecef" opacity="0.8"/>
+  </g>
+  
+  <!-- Black metal railings -->
+  <!-- Lower railing -->
+  <g stroke="#2d3748" stroke-width="3" fill="none">
+    <line x1="100" y1="600" x2="300" y2="440"/>
+    <line x1="100" y1="580" x2="300" y2="420"/>
+    <!-- Vertical posts -->
+    <line x1="120" y1="600" x2="120" y2="580"/>
+    <line x1="160" y1="584" x2="160" y2="564"/>
+    <line x1="200" y1="568" x2="200" y2="548"/>
+    <line x1="240" y1="552" x2="240" y2="532"/>
+    <line x1="280" y1="536" x2="280" y2="516"/>
+  </g>
+  
+  <!-- Upper railing -->
+  <g stroke="#2d3748" stroke-width="3" fill="none">
+    <line x1="400" y1="400" x2="600" y2="240"/>
+    <line x1="400" y1="380" x2="600" y2="220"/>
+    <!-- Vertical posts -->
+    <line x1="420" y1="400" x2="420" y2="380"/>
+    <line x1="460" y1="384" x2="460" y2="364"/>
+    <line x1="500" y1="368" x2="500" y2="348"/>
+    <line x1="540" y1="352" x2="540" y2="332"/>
+    <line x1="580" y1="336" x2="580" y2="316"/>
+  </g>
+  
+  <!-- Pendant lights -->
+  <g>
+    <!-- Light cords -->
+    <line x1="350" y1="50" x2="350" y2="200" stroke="#d4d4d4" stroke-width="1"/>
+    <line x1="380" y1="50" x2="380" y2="220" stroke="#d4d4d4" stroke-width="1"/>
+    <line x1="410" y1="50" x2="410" y2="240" stroke="#d4d4d4" stroke-width="1"/>
+    <line x1="440" y1="50" x2="440" y2="260" stroke="#d4d4d4" stroke-width="1"/>
+    <line x1="470" y1="50" x2="470" y2="280" stroke="#d4d4d4" stroke-width="1"/>
+    
+    <!-- Light fixtures -->
+    <ellipse cx="350" cy="200" rx="15" ry="20" fill="url(#woodGradient)"/>
+    <ellipse cx="380" cy="220" rx="15" ry="20" fill="url(#woodGradient)"/>
+    <ellipse cx="410" cy="240" rx="15" ry="20" fill="url(#woodGradient)"/>
+    <ellipse cx="440" cy="260" rx="15" ry="20" fill="url(#woodGradient)"/>
+    <ellipse cx="470" cy="280" rx="15" ry="20" fill="url(#woodGradient)"/>
+  </g>
+  
+  <!-- Wall art frames -->
+  <g fill="#ffffff" stroke="#e9ecef" stroke-width="2">
+    <rect x="650" y="200" width="80" height="60" rx="2"/>
+    <rect x="650" y="300" width="80" height="60" rx="2"/>
+    <rect x="650" y="400" width="80" height="60" rx="2"/>
+  </g>
+  
+  <!-- Floor -->
+  <rect x="0" y="950" width="800" height="50" fill="#f8f9fa"/>
+  
+  <!-- Shadows and depth -->
+  <g opacity="0.1" fill="#000000">
+    <polygon points="100,600 300,440 300,450 100,610"/>
+    <polygon points="400,400 600,240 600,250 400,410"/>
+  </g>
+  
+  <!-- Subtle lighting effects -->
+  <g opacity="0.3">
+    <ellipse cx="350" cy="200" rx="30" ry="15" fill="#ffd700"/>
+    <ellipse cx="380" cy="220" rx="30" ry="15" fill="#ffd700"/>
+    <ellipse cx="410" cy="240" rx="30" ry="15" fill="#ffd700"/>
+    <ellipse cx="440" cy="260" rx="30" ry="15" fill="#ffd700"/>
+    <ellipse cx="470" cy="280" rx="30" ry="15" fill="#ffd700"/>
+  </g>
+</svg>

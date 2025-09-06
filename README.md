@@ -1,36 +1,188 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Legacy Interiors and Developers
 
-## Getting Started
+A modern, responsive website for Legacy Interiors and Developers, showcasing interior design and development services with a focus on timeless design and exceptional craftsmanship.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Modern Design**: Clean, minimalist interface with smooth animations
+- **Responsive**: Fully responsive design that works on all devices
+- **Performance Optimized**: Built with Next.js 14 for optimal performance
+- **Accessibility**: WCAG compliant with proper semantic HTML
+- **SEO Optimized**: Meta tags, structured data, and optimized images
+- **Type Safe**: Full TypeScript implementation
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS 4.x
+- **Animations**: Framer Motion
+- **UI Components**: Radix UI primitives
+- **Icons**: Lucide React
+- **Typography**: Inter font family
+- **Language**: TypeScript
+
+## 📁 Project Structure
+
+```
+├── app/                    # Next.js app directory
+│   ├── about/             # About page
+│   ├── contact/           # Contact page
+│   ├── development/       # Development services page
+│   ├── interior-design/   # Interior design services page
+│   ├── portfolio/         # Portfolio showcase page
+│   ├── services/          # Services overview page
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx          # Homepage
+├── components/            # Reusable components
+│   ├── header.tsx        # Navigation header
+│   ├── footer.tsx        # Site footer
+│   ├── hero-section.tsx  # Homepage hero
+│   └── ...               # Other components
+├── types/                # TypeScript type definitions
+├── lib/                  # Utility functions
+└── public/              # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Pages Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Homepage (`/`)
+- Hero section with animated text and parallax effects
+- Featured products showcase
+- Materials section with interactive swatches
+- Newsletter signup
+- Company information
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### About (`/about`)
+- Company story and values
+- Team information
+- Mission and vision
 
-## Learn More
+### Services (`/services`)
+- Comprehensive service offerings
+- Interior design services
+- Development and construction services
+- Consultation and project management
 
-To learn more about Next.js, take a look at the following resources:
+### Interior Design (`/interior-design`)
+- Design consultation services
+- Space planning
+- Lighting design
+- Custom solutions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Development (`/development`)
+- Residential development
+- Commercial construction
+- Renovation and restoration
+- Project management
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Portfolio (`/portfolio`)
+- Project showcase with filtering
+- Case studies
+- Before/after galleries
+- Client testimonials
 
-## Deploy on Vercel
+### Contact (`/contact`)
+- Contact form
+- Company information
+- Location map
+- Business hours
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Getting Started
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Run development server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Open your browser**:
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📝 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## 🎯 Key Features Implemented
+
+### ✅ Fixed Issues
+- **TypeScript Errors**: Resolved all type safety issues
+- **ESLint Warnings**: Fixed unused variables and React entity escaping
+- **Build Errors**: Application now builds successfully
+- **Missing Assets**: Created placeholder logo and assets
+- **Navigation**: Implemented proper routing between pages
+
+### ✅ New Pages Created
+- About page with company story and values
+- Interior Design services page
+- Development services page
+- Portfolio with project filtering
+- Services overview page
+- Contact page with form and information
+
+### ✅ Enhanced Components
+- **Header**: Mobile-responsive navigation with smooth animations
+- **Footer**: Comprehensive footer with links and social media
+- **Product Cards**: Interactive product showcase with quick look modals
+- **Forms**: Contact form with validation
+- **Animations**: Smooth page transitions and micro-interactions
+
+## 🔄 Future Enhancements
+
+### Phase 2: Content Management
+- [ ] Add CMS integration (Sanity/Contentful)
+- [ ] Dynamic project portfolio
+- [ ] Blog/news section
+- [ ] Client testimonials system
+
+### Phase 3: Advanced Features
+- [ ] Online booking system
+- [ ] Project cost calculator
+- [ ] Virtual consultation scheduling
+- [ ] 3D visualization integration
+
+### Phase 4: Performance & Analytics
+- [ ] Advanced SEO optimization
+- [ ] Analytics integration
+- [ ] Performance monitoring
+- [ ] A/B testing setup
+
+## 🎨 Design System
+
+The application uses a consistent design system with:
+- **Colors**: Neutral palette with accent colors
+- **Typography**: Inter font family with defined scales
+- **Spacing**: Consistent spacing scale
+- **Components**: Reusable UI components
+- **Animations**: Smooth, purposeful animations
+
+## 📱 Responsive Design
+
+The website is fully responsive with breakpoints:
+- Mobile: 320px - 768px
+- Tablet: 768px - 1024px
+- Desktop: 1024px+
+
+## 🔧 Development Guidelines
+
+1. **Component Structure**: Use functional components with TypeScript
+2. **Styling**: Utility-first approach with Tailwind CSS
+3. **State Management**: React hooks for local state
+4. **Performance**: Optimize images and lazy load components
+5. **Accessibility**: Follow WCAG guidelines
+
+## 📄 License
+
+This project is proprietary and confidential. All rights reserved by Legacy Interiors and Developers.
+
+---
+
+Built with ❤️ by the Legacy team
+# legacy-portfolio
