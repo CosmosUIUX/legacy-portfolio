@@ -63,7 +63,7 @@ export function ParallaxBackground({
   return (
     <div className={`absolute inset-0 ${className}`}>
       <motion.div
-        ref={ref}
+        ref={ref as React.RefObject<HTMLDivElement>}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${imageUrl})`,
