@@ -1,26 +1,31 @@
-"use client"
+"use client";
 
-import { useScrollAnimation } from "@/lib/motion"
-import Image from "next/image"
+import { useScrollAnimation } from "@/lib/motion/hooks";
+import Image from "next/image";
 
 interface ParallaxImageProps {
-  src: string
-  alt: string
-  className?: string
-  parallaxOffset?: number
+  src: string;
+  alt: string;
+  className?: string;
+  parallaxOffset?: number;
 }
 
-export function ParallaxImage({ src, alt, className, parallaxOffset = 12 }: ParallaxImageProps) {
+export function ParallaxImage({
+  src,
+  alt,
+  className,
+  parallaxOffset = 12,
+}: ParallaxImageProps) {
   const { ref, style } = useScrollAnimation({
     offset: ["start end", "end start"],
     transform: {
-      y: [-parallaxOffset, parallaxOffset]
-    }
-  })
+      y: [-parallaxOffset, parallaxOffset],
+    },
+  });
 
   return (
-    <div ref={ref as React.RefObject<HTMLDivElement>} className={className}>
-      <div style={style}>
+    <div ref={ref as React.RefObject<HTMLDivElement>} className={`relative ${className}`}>
+      <div style={style} className="relative w-full h-full">
         <Image
           src={src || "/placeholder.svg"}
           alt={alt}
@@ -30,5 +35,5 @@ export function ParallaxImage({ src, alt, className, parallaxOffset = 12 }: Para
         />
       </div>
     </div>
-  )
+  );
 }

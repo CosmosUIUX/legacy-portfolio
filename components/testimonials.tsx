@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "@/lib/motion"
-import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react"
-import { Reveal } from "./reveal"
+import { useState } from "react";
+import { motion, AnimatePresence } from "@/lib/motion";
+import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import { Reveal } from "./reveal";
 
 interface Testimonial {
-  id: number
-  name: string
-  role: string
-  company: string
-  content: string
-  rating: number
-  image: string
-  project: string
+  id: number;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  rating: number;
+  image: string;
+  project: string;
 }
 
 const testimonials: Testimonial[] = [
@@ -22,57 +22,63 @@ const testimonials: Testimonial[] = [
     name: "Sarah Johnson",
     role: "Homeowner",
     company: "Private Client",
-    content: "Legacy transformed our 1920s home into a modern masterpiece while preserving its historical charm. Their attention to detail and understanding of our vision was exceptional. We couldn't be happier with the result.",
+    content:
+      "Legacy transformed our 1920s home into a modern masterpiece while preserving its historical charm. Their attention to detail and understanding of our vision was exceptional. We couldn't be happier with the result.",
     rating: 5,
     image: "/testimonial-1.jpg",
-    project: "Historic Home Renovation"
+    project: "Historic Home Renovation",
   },
   {
     id: 2,
     name: "Michael Chen",
     role: "CEO",
     company: "TechFlow Solutions",
-    content: "The office redesign has completely transformed our company culture. Employee satisfaction is up 45% and our clients are constantly impressed by the space. Legacy delivered beyond our expectations.",
+    content:
+      "The office redesign has completely transformed our company culture. Employee satisfaction is up 45% and our clients are constantly impressed by the space. Legacy delivered beyond our expectations.",
     rating: 5,
     image: "/testimonial-2.jpg",
-    project: "Corporate Office Redesign"
+    project: "Corporate Office Redesign",
   },
   {
     id: 3,
     name: "Emily Rodriguez",
     role: "Restaurant Owner",
     company: "Harvest & Hearth",
-    content: "Legacy created an atmosphere that perfectly complements our cuisine. The design is both functional and beautiful, and our customers love the ambiance. It's been instrumental in our success.",
+    content:
+      "Legacy created an atmosphere that perfectly complements our cuisine. The design is both functional and beautiful, and our customers love the ambiance. It's been instrumental in our success.",
     rating: 5,
     image: "/testimonial-3.jpg",
-    project: "Restaurant Interior Design"
+    project: "Restaurant Interior Design",
   },
   {
     id: 4,
     name: "David Thompson",
     role: "Property Developer",
     company: "Artisan Hospitality Group",
-    content: "Working with Legacy on our boutique hotel was a game-changer. Their expertise in hospitality design and project management ensured we opened on time and within budget. The results speak for themselves.",
+    content:
+      "Working with Legacy on our boutique hotel was a game-changer. Their expertise in hospitality design and project management ensured we opened on time and within budget. The results speak for themselves.",
     rating: 5,
     image: "/testimonial-4.jpg",
-    project: "Boutique Hotel Development"
-  }
-]
+    project: "Boutique Hotel Development",
+  },
+];
 
 export function Testimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-  }
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
 
   const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-  }
+    setCurrentIndex(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length,
+    );
+  };
 
   const goToTestimonial = (index: number) => {
-    setCurrentIndex(index)
-  }
+    setCurrentIndex(index);
+  };
 
   return (
     <section className="py-20 lg:py-32 bg-neutral-50">
@@ -83,7 +89,8 @@ export function Testimonials() {
               What Our <span className="italic font-light">Clients Say</span>
             </h2>
             <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
-              Don&apos;t just take our word for it. Here&apos;s what our clients have to say about working with Legacy.
+              Don&apos;t just take our word for it. Here&apos;s what our clients
+              have to say about working with Legacy.
             </p>
           </div>
         </Reveal>
@@ -111,13 +118,22 @@ export function Testimonials() {
                   {/* Testimonial Content */}
                   <div className="flex-1 text-center lg:text-left">
                     {/* Quote Icon */}
-                    <Quote className="text-neutral-300 mb-4 mx-auto lg:mx-0" size={32} />
-                    
+                    <Quote
+                      className="text-neutral-300 mb-4 mx-auto lg:mx-0"
+                      size={32}
+                    />
+
                     {/* Rating */}
                     <div className="flex justify-center lg:justify-start mb-4">
-                      {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                        <Star key={i} className="text-yellow-400 fill-current" size={20} />
-                      ))}
+                      {[...Array(testimonials[currentIndex].rating)].map(
+                        (_, i) => (
+                          <Star
+                            key={i}
+                            className="text-yellow-400 fill-current"
+                            size={20}
+                          />
+                        ),
+                      )}
                     </div>
 
                     {/* Content */}
@@ -131,7 +147,8 @@ export function Testimonials() {
                         {testimonials[currentIndex].name}
                       </div>
                       <div className="text-neutral-600">
-                        {testimonials[currentIndex].role} at {testimonials[currentIndex].company}
+                        {testimonials[currentIndex].role} at{" "}
+                        {testimonials[currentIndex].company}
                       </div>
                       <div className="text-sm text-neutral-500">
                         Project: {testimonials[currentIndex].project}
@@ -159,7 +176,9 @@ export function Testimonials() {
                   key={index}
                   onClick={() => goToTestimonial(index)}
                   className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                    currentIndex === index ? "bg-neutral-900" : "bg-neutral-300 hover:bg-neutral-400"
+                    currentIndex === index
+                      ? "bg-neutral-900"
+                      : "bg-neutral-300 hover:bg-neutral-400"
                   }`}
                 />
               ))}
@@ -181,7 +200,7 @@ export function Testimonials() {
               { number: "98%", label: "Client Satisfaction" },
               { number: "150+", label: "Projects Completed" },
               { number: "4.9/5", label: "Average Rating" },
-              { number: "95%", label: "Repeat Clients" }
+              { number: "95%", label: "Repeat Clients" },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -202,5 +221,5 @@ export function Testimonials() {
         </Reveal>
       </div>
     </section>
-  )
+  );
 }

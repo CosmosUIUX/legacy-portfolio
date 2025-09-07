@@ -1,152 +1,159 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
-import { ProductGrid } from './product-grid'
-import type { Product } from '@/types/product'
+import React, { useState } from "react";
+import { ProductGrid } from "./product-grid";
+import type { Product } from "@/types/product";
 
 // Demo products for testing the grid animations
 const demoProducts: Product[] = [
   {
-    id: '1',
-    name: 'Modern Kitchen Island',
-    price: '$25,000',
-    image: '/placeholder-product.svg',
-    badge: 'New',
-    materials: ['Oak', 'Quartz', 'Steel'],
+    id: "1",
+    name: "Modern Kitchen Island",
+    price: "$25,000",
+    image: "/placeholder-product.svg",
+    badge: "New",
+    materials: ["Oak", "Quartz", "Steel"],
     swatches: [
-      { name: 'Oak', color: '#8B4513' },
-      { name: 'Beige', color: '#F5F5DC' },
-      { name: 'Silver', color: '#C0C0C0' }
+      { name: "Oak", color: "#8B4513" },
+      { name: "Beige", color: "#F5F5DC" },
+      { name: "Silver", color: "#C0C0C0" },
     ],
-    quickLookImages: ['/placeholder-product.svg'],
-    dimensions: '120x60x36'
+    quickLookImages: ["/placeholder-product.svg"],
+    dimensions: "120x60x36",
   },
   {
-    id: '2',
-    name: 'Elegant Dining Set',
-    price: '$8,500',
-    image: '/placeholder-product.svg',
-    badge: 'Popular',
-    materials: ['Walnut', 'Leather'],
+    id: "2",
+    name: "Elegant Dining Set",
+    price: "$8,500",
+    image: "/placeholder-product.svg",
+    badge: "Popular",
+    materials: ["Walnut", "Leather"],
     swatches: [
-      { name: 'Walnut', color: '#654321' },
-      { name: 'Oak', color: '#8B4513' }
+      { name: "Walnut", color: "#654321" },
+      { name: "Oak", color: "#8B4513" },
     ],
-    quickLookImages: ['/placeholder-product.svg'],
-    dimensions: '84x42x30'
+    quickLookImages: ["/placeholder-product.svg"],
+    dimensions: "84x42x30",
   },
   {
-    id: '3',
-    name: 'Contemporary Staircase',
-    price: '$15,000',
-    image: '/placeholder-product.svg',
-    badge: 'Featured',
-    materials: ['Oak', 'Steel', 'Glass'],
+    id: "3",
+    name: "Contemporary Staircase",
+    price: "$15,000",
+    image: "/placeholder-product.svg",
+    badge: "Featured",
+    materials: ["Oak", "Steel", "Glass"],
     swatches: [
-      { name: 'Oak', color: '#8B4513' },
-      { name: 'Steel', color: '#C0C0C0' },
-      { name: 'Glass', color: '#E6E6FA' }
+      { name: "Oak", color: "#8B4513" },
+      { name: "Steel", color: "#C0C0C0" },
+      { name: "Glass", color: "#E6E6FA" },
     ],
-    quickLookImages: ['/placeholder-product.svg'],
-    dimensions: 'Custom'
+    quickLookImages: ["/placeholder-product.svg"],
+    dimensions: "Custom",
   },
   {
-    id: '4',
-    name: 'Luxury Bathroom Vanity',
-    price: '$12,000',
-    image: '/placeholder-product.svg',
-    badge: 'Limited',
-    materials: ['Marble', 'Brass'],
+    id: "4",
+    name: "Luxury Bathroom Vanity",
+    price: "$12,000",
+    image: "/placeholder-product.svg",
+    badge: "Limited",
+    materials: ["Marble", "Brass"],
     swatches: [
-      { name: 'Marble', color: '#F8F8FF' },
-      { name: 'Brass', color: '#B8860B' }
+      { name: "Marble", color: "#F8F8FF" },
+      { name: "Brass", color: "#B8860B" },
     ],
-    quickLookImages: ['/placeholder-product.svg'],
-    dimensions: '72x24x36'
+    quickLookImages: ["/placeholder-product.svg"],
+    dimensions: "72x24x36",
   },
   {
-    id: '5',
-    name: 'Custom Bookshelf',
-    price: '$3,500',
-    image: '/placeholder-product.svg',
-    materials: ['Pine', 'Oak'],
+    id: "5",
+    name: "Custom Bookshelf",
+    price: "$3,500",
+    image: "/placeholder-product.svg",
+    materials: ["Pine", "Oak"],
     swatches: [
-      { name: 'Pine', color: '#DEB887' },
-      { name: 'Oak', color: '#8B4513' }
+      { name: "Pine", color: "#DEB887" },
+      { name: "Oak", color: "#8B4513" },
     ],
-    quickLookImages: ['/placeholder-product.svg'],
-    dimensions: '96x12x84'
+    quickLookImages: ["/placeholder-product.svg"],
+    dimensions: "96x12x84",
   },
   {
-    id: '6',
-    name: 'Designer Coffee Table',
-    price: '$2,800',
-    image: '/placeholder-product.svg',
-    badge: 'New',
-    materials: ['Glass', 'Chrome'],
+    id: "6",
+    name: "Designer Coffee Table",
+    price: "$2,800",
+    image: "/placeholder-product.svg",
+    badge: "New",
+    materials: ["Glass", "Chrome"],
     swatches: [
-      { name: 'Glass', color: '#E6E6FA' },
-      { name: 'Chrome', color: '#C0C0C0' }
+      { name: "Glass", color: "#E6E6FA" },
+      { name: "Chrome", color: "#C0C0C0" },
     ],
-    quickLookImages: ['/placeholder-product.svg'],
-    dimensions: '48x24x18'
-  }
-]
+    quickLookImages: ["/placeholder-product.svg"],
+    dimensions: "48x24x18",
+  },
+];
 
 // Generate additional products for large collection testing
 const generateLargeCollection = (count: number): Product[] => {
-  const badges = ['New', 'Popular', 'Featured', 'Limited', undefined]
+  const badges = ["New", "Popular", "Featured", "Limited", undefined];
   const materials = [
-    ['Oak', 'Steel'], ['Walnut', 'Brass'], ['Pine', 'Glass'], 
-    ['Marble', 'Chrome'], ['Mahogany', 'Copper']
-  ]
-  
+    ["Oak", "Steel"],
+    ["Walnut", "Brass"],
+    ["Pine", "Glass"],
+    ["Marble", "Chrome"],
+    ["Mahogany", "Copper"],
+  ];
+
   return Array.from({ length: count }, (_, i) => ({
     id: `product-${i + 7}`,
     name: `Product ${i + 7}`,
     price: `$${(Math.random() * 20000 + 1000).toFixed(0)}`,
-    image: '/placeholder-product.svg',
+    image: "/placeholder-product.svg",
     badge: badges[Math.floor(Math.random() * badges.length)],
     materials: materials[Math.floor(Math.random() * materials.length)],
     swatches: [
-      { name: 'Oak', color: '#8B4513' },
-      { name: 'Steel', color: '#C0C0C0' }
+      { name: "Oak", color: "#8B4513" },
+      { name: "Steel", color: "#C0C0C0" },
     ],
-    quickLookImages: ['/placeholder-product.svg'],
-    dimensions: `${Math.floor(Math.random() * 100 + 20)}x${Math.floor(Math.random() * 50 + 10)}x${Math.floor(Math.random() * 40 + 15)}`
-  }))
-}
+    quickLookImages: ["/placeholder-product.svg"],
+    dimensions: `${Math.floor(Math.random() * 100 + 20)}x${Math.floor(Math.random() * 50 + 10)}x${Math.floor(Math.random() * 40 + 15)}`,
+  }));
+};
 
 export function ProductGridDemo() {
-  const [selectedPreset, setSelectedPreset] = useState<'small' | 'medium' | 'large'>('medium')
-  const [animationPreset, setAnimationPreset] = useState<'subtle' | 'dynamic' | 'cinematic'>('dynamic')
-  const [isLoading, setIsLoading] = useState(false)
+  const [selectedPreset, setSelectedPreset] = useState<
+    "small" | "medium" | "large"
+  >("medium");
+  const [animationPreset, setAnimationPreset] = useState<
+    "subtle" | "dynamic" | "cinematic"
+  >("dynamic");
+  const [isLoading, setIsLoading] = useState(false);
 
   // Get products based on selected preset
   const getProducts = () => {
     switch (selectedPreset) {
-      case 'small':
-        return demoProducts.slice(0, 3)
-      case 'medium':
-        return demoProducts
-      case 'large':
-        return [...demoProducts, ...generateLargeCollection(20)]
+      case "small":
+        return demoProducts.slice(0, 3);
+      case "medium":
+        return demoProducts;
+      case "large":
+        return [...demoProducts, ...generateLargeCollection(20)];
       default:
-        return demoProducts
+        return demoProducts;
     }
-  }
+  };
 
-  const products = getProducts()
+  const products = getProducts();
 
   const handleQuickLook = (product: Product) => {
-    console.log('Quick look:', product.name)
-    alert(`Quick look: ${product.name}`)
-  }
+    console.log("Quick look:", product.name);
+    alert(`Quick look: ${product.name}`);
+  };
 
   const simulateLoading = () => {
-    setIsLoading(true)
-    setTimeout(() => setIsLoading(false), 2000)
-  }
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 2000);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -156,7 +163,7 @@ export function ProductGridDemo() {
             Product Grid Animation Demo
           </h1>
           <p className="text-gray-600 mb-6">
-            Test the enhanced product grid with staggered entrance animations, 
+            Test the enhanced product grid with staggered entrance animations,
             smooth layout transitions, and performance optimizations.
           </p>
 
@@ -201,7 +208,7 @@ export function ProductGridDemo() {
                 disabled={isLoading}
                 className="px-4 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 disabled:opacity-50"
               >
-                {isLoading ? 'Loading...' : 'Simulate Loading'}
+                {isLoading ? "Loading..." : "Simulate Loading"}
               </button>
             </div>
           </div>
@@ -215,7 +222,9 @@ export function ProductGridDemo() {
               <li>• Staggered entrance animations with row-based timing</li>
               <li>• Optimized animations for collections over 20 items</li>
               <li>• Smooth layout transitions for filtering and sorting</li>
-              <li>• GPU-accelerated transforms with will-change optimization</li>
+              <li>
+                • GPU-accelerated transforms with will-change optimization
+              </li>
               <li>• Reduced motion support for accessibility</li>
             </ul>
           </div>
@@ -234,5 +243,5 @@ export function ProductGridDemo() {
         />
       </div>
     </div>
-  )
+  );
 }

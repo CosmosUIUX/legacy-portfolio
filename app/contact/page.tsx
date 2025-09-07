@@ -1,41 +1,40 @@
-"use client"
+"use client";
 
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import { motion } from "@/lib/motion"
-import { Reveal } from "@/components/reveal"
-import { EnhancedContactForm } from "@/components/enhanced-contact-form"
-import { Mail, Phone, MapPin, Clock } from "lucide-react"
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { motion } from "@/lib/motion";
+import { Reveal } from "@/components/reveal";
+import { EnhancedContactForm } from "@/components/enhanced-contact-form";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 
 export default function ContactPage() {
-
   const contactInfo = [
     {
       icon: Phone,
       title: "Phone",
-      details: ["+1 (555) 123-4567", "+1 (555) 987-6543"]
+      details: ["+1 (555) 123-4567", "+1 (555) 987-6543"],
     },
     {
       icon: Mail,
       title: "Email",
-      details: ["info@legacyinteriors.com", "projects@legacyinteriors.com"]
+      details: ["info@legacyinteriors.com", "projects@legacyinteriors.com"],
     },
     {
       icon: MapPin,
       title: "Address",
-      details: ["123 Design Street", "Creative District, CD 12345"]
+      details: ["123 Design Street", "Creative District, CD 12345"],
     },
     {
       icon: Clock,
       title: "Hours",
-      details: ["Mon - Fri: 9:00 AM - 6:00 PM", "Sat: 10:00 AM - 4:00 PM"]
-    }
-  ]
+      details: ["Mon - Fri: 9:00 AM - 6:00 PM", "Sat: 10:00 AM - 4:00 PM"],
+    },
+  ];
 
   return (
     <main className="min-h-screen">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-32">
         <div className="container-custom">
@@ -45,7 +44,8 @@ export default function ContactPage() {
                 Get In <span className="italic font-light">Touch</span>
               </h1>
               <p className="text-xl text-neutral-600 leading-relaxed">
-                Ready to start your next project? We&apos;d love to hear from you and discuss how we can bring your vision to life.
+                Ready to start your next project? We&apos;d love to hear from
+                you and discuss how we can bring your vision to life.
               </p>
             </div>
           </Reveal>
@@ -63,9 +63,12 @@ export default function ContactPage() {
             <Reveal delay={0.2}>
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-3xl font-bold text-neutral-900 mb-6">Contact Information</h2>
+                  <h2 className="text-3xl font-bold text-neutral-900 mb-6">
+                    Contact Information
+                  </h2>
                   <p className="text-lg text-neutral-600 leading-relaxed mb-8">
-                    We&apos;re here to help bring your vision to life. Reach out to us through any of the following channels.
+                    We&apos;re here to help bring your vision to life. Reach out
+                    to us through any of the following channels.
                   </p>
                 </div>
 
@@ -82,9 +85,13 @@ export default function ContactPage() {
                         <info.icon size={20} className="text-neutral-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-neutral-900 mb-1">{info.title}</h3>
+                        <h3 className="font-semibold text-neutral-900 mb-1">
+                          {info.title}
+                        </h3>
                         {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-neutral-600">{detail}</p>
+                          <p key={idx} className="text-neutral-600">
+                            {detail}
+                          </p>
                         ))}
                       </div>
                     </motion.div>
@@ -105,5 +112,5 @@ export default function ContactPage() {
 
       <Footer />
     </main>
-  )
+  );
 }

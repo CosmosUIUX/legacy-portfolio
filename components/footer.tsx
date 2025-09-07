@@ -1,9 +1,10 @@
-"use client"
-import { useMotion } from "@/lib/motion"
-import { Instagram, Twitter, Facebook, ArrowUpRight } from "lucide-react"
+"use client";
+import { useMotion } from "@/lib/motion/hooks";
+import { motion } from "@/lib/motion";
+import { Instagram, Twitter, Facebook, ArrowUpRight } from "lucide-react";
 
 export function Footer() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   const footerLinks = {
     Shop: [
@@ -27,13 +28,13 @@ export function Footer() {
       { name: "Shipping", href: "#" },
       { name: "Returns", href: "#" },
     ],
-  }
+  };
 
   const socialLinks = [
     { name: "Instagram", icon: Instagram, href: "#" },
     { name: "Twitter", icon: Twitter, href: "#" },
     { name: "Facebook", icon: Facebook, href: "#" },
-  ]
+  ];
 
   return (
     <footer className="bg-white/[0.02] border-t border-white/[0.02]">
@@ -51,40 +52,42 @@ export function Footer() {
         <BottomSection currentYear={currentYear} />
       </div>
     </footer>
-  )
+  );
 }
 
 function BrandSection({ socialLinks }: { socialLinks: any[] }) {
   const { ref, animationProps, eventHandlers } = useMotion({
-    trigger: 'viewport',
-    duration: 600
-  })
+    trigger: "viewport",
+    duration: 600,
+  });
 
   return (
     <div className="lg:col-span-4">
-      <div ref={ref as React.RefObject<HTMLDivElement>} {...eventHandlers}>
+      <motion.div ref={ref as React.RefObject<HTMLDivElement>} {...eventHandlers}>
         <h3 className="text-2xl font-bold text-neutral-900 mb-4">LEGACY</h3>
         <p className="text-neutral-600 mb-6 leading-relaxed">
-          Creating beautiful spaces through expert interior design and development services. Timeless design, exceptional craftsmanship, and personalized service.
+          Creating beautiful spaces through expert interior design and
+          development services. Timeless design, exceptional craftsmanship, and
+          personalized service.
         </p>
         <div className="flex space-x-4">
           {socialLinks.map((social) => (
             <SocialLink key={social.name} social={social} />
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
-  )
+  );
 }
 
 function SocialLink({ social }: { social: any }) {
   const { ref, eventHandlers } = useMotion({
-    trigger: 'hover',
-    duration: 200
-  })
+    trigger: "hover",
+    duration: 200,
+  });
 
   return (
-    <a
+    <motion.a
       ref={ref as React.RefObject<HTMLAnchorElement>}
       {...eventHandlers}
       href={social.href}
@@ -92,8 +95,8 @@ function SocialLink({ social }: { social: any }) {
     >
       <social.icon size={18} />
       <span className="sr-only">{social.name}</span>
-    </a>
-  )
+    </motion.a>
+  );
 }
 
 function LinksSection({ footerLinks }: { footerLinks: any }) {
@@ -101,22 +104,35 @@ function LinksSection({ footerLinks }: { footerLinks: any }) {
     <div className="lg:col-span-8">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12">
         {Object.entries(footerLinks).map(([category, links], index) => (
-          <LinkCategory key={category} category={category} links={links as any[]} index={index} />
+          <LinkCategory
+            key={category}
+            category={category}
+            links={links as any[]}
+            index={index}
+          />
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-function LinkCategory({ category, links, index }: { category: string; links: any[]; index: number }) {
+function LinkCategory({
+  category,
+  links,
+  index,
+}: {
+  category: string;
+  links: any[];
+  index: number;
+}) {
   const { ref, eventHandlers } = useMotion({
-    trigger: 'viewport',
+    trigger: "viewport",
     duration: 600,
-    delay: index * 100
-  })
+    delay: index * 100,
+  });
 
   return (
-    <div ref={ref as React.RefObject<HTMLDivElement>} {...eventHandlers}>
+    <motion.div ref={ref as React.RefObject<HTMLDivElement>} {...eventHandlers}>
       <h4 className="font-semibold text-neutral-900 mb-4">{category}</h4>
       <ul className="space-y-3">
         {links.map((link) => (
@@ -134,25 +150,28 @@ function LinkCategory({ category, links, index }: { category: string; links: any
           </li>
         ))}
       </ul>
-    </div>
-  )
+    </motion.div>
+  );
 }
 
 function BottomSection({ currentYear }: { currentYear: number }) {
   const { ref, eventHandlers } = useMotion({
-    trigger: 'viewport',
+    trigger: "viewport",
     duration: 600,
-    delay: 300
-  })
+    delay: 300,
+  });
 
   return (
-    <div
+    <motion.div
       ref={ref as React.RefObject<HTMLDivElement>}
       {...eventHandlers}
       className="pt-8 pb-4 border-t border-neutral-200 flex justify-center items-center"
     >
       <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-neutral-500 text-center">
-        <p>&copy; {currentYear} Legacy Interiors and Developers. All rights reserved.</p>
+        <p>
+          &copy; {currentYear} Legacy Interiors and Developers. All rights
+          reserved.
+        </p>
         <div className="flex space-x-6">
           <a href="#" className="hover:text-neutral-700 transition-colors">
             Privacy Policy
@@ -165,6 +184,6 @@ function BottomSection({ currentYear }: { currentYear: number }) {
           </a>
         </div>
       </div>
-    </div>
-  )
+    </motion.div>
+  );
 }

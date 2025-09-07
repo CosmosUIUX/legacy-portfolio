@@ -1,35 +1,45 @@
-import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import { PageTransition, SectionTransition, RouteTransition, usePageTransition } from '../page-transition'
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import {
+  PageTransition,
+  SectionTransition,
+  RouteTransition,
+  usePageTransition,
+} from "../page-transition";
 
 // Mock Motion.dev
-jest.mock('motion/react', () => ({
+jest.mock("motion/react", () => ({
   motion: {
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    section: ({ children, ...props }: any) => <section {...props}>{children}</section>,
+    section: ({ children, ...props }: any) => (
+      <section {...props}>{children}</section>
+    ),
   },
   AnimatePresence: ({ children }: any) => <>{children}</>,
   useInView: () => true,
-  useScroll: () => ({ scrollYProgress: { get: () => 0, on: () => () => {} }, scrollY: { on: () => () => {} } }),
+  useScroll: () => ({
+    scrollYProgress: { get: () => 0, on: () => () => {} },
+    scrollY: { on: () => () => {} },
+  }),
   useTransform: () => ({ get: () => 0 }),
   useMotionValue: () => ({ get: () => 0, set: () => {} }),
   useSpring: (value: any) => value,
-}))
+}));
 
 // Mock Motion.dev hooks
-jest.mock('@/lib/motion/hooks', () => ({
+jest.mock("@/lib/motion/hooks", () => ({
   useMotion: () => ({
     ref: { current: null },
     isActive: true,
     animationProps: {
-      animate: 'visible',
-      initial: 'hidden',
+      animate: "visible",
+      initial: "hidden",
       transition: { duration: 0.3 },
       variants: {
         hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 }
-      }
+        visible: { opacity: 1, y: 0 },
+      },
     },
     eventHandlers: {},
     isHovered: false,
@@ -38,17 +48,17 @@ jest.mock('@/lib/motion/hooks', () => ({
     ref: { current: null },
     style: {},
     scrollProgress: { get: () => 0 },
-    scrollY: { on: () => () => {} }
+    scrollY: { on: () => () => {} },
   }),
   useStaggerAnimation: () => ({
     ref: { current: null },
     getItemProps: () => ({
-      animate: 'visible',
-      initial: 'hidden',
+      animate: "visible",
+      initial: "hidden",
       variants: {
         hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 }
-      }
+        visible: { opacity: 1, y: 0 },
+      },
     }),
     startAnimation: jest.fn(),
     resetAnimation: jest.fn(),
@@ -57,182 +67,201 @@ jest.mock('@/lib/motion/hooks', () => ({
     ref: { current: null },
     isInView: true,
     hasEntered: true,
-    shouldAnimate: true
-  })
-}))
+    shouldAnimate: true,
+  }),
+}));
 
 // Mock Next.js navigation
-jest.mock('next/navigation', () => ({
-  usePathname: () => '/test-path',
-}))
+jest.mock("next/navigation", () => ({
+  usePathname: () => "/test-path",
+}));
 
 // Mock Motion.dev provider
-jest.mock('@/lib/motion/provider', () => ({
+jest.mock("@/lib/motion/provider", () => ({
   useMotionSettings: () => ({
     shouldAnimate: true,
     getDuration: (duration: number) => duration,
     getEasing: (easing: string) => easing,
-    performanceMode: 'high'
-  })
-}))
+    performanceMode: "high",
+  }),
+}));
 
 // Mock MotionProvider
 const MockMotionProvider = ({ children }: { children: React.ReactNode }) => (
   <div data-testid="motion-provider">{children}</div>
-)
+);
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <MockMotionProvider>{children}</MockMotionProvider>
-)
+);
 
-describe('PageTransition', () => {
-  it('renders children correctly', () => {
+describe("PageTransition", () => {
+  it("renders children correctly", () => {
     render(
       <TestWrapper>
         <PageTransition>
           <div>Test Content</div>
         </PageTransition>
-      </TestWrapper>
-    )
-    
-    expect(screen.getByText('Test Content')).toBeInTheDocument()
-  })
+      </TestWrapper>,
+    );
 
-  it('shows loading spinner when loading prop is true', () => {
+    expect(screen.getByText("Test Content")).toBeInTheDocument();
+  });
+
+  it("shows loading spinner when loading prop is true", () => {
     render(
       <TestWrapper>
         <PageTransition loading={true} loadingText="Loading content...">
           <div>Test Content</div>
         </PageTransition>
-      </TestWrapper>
-    )
-    
-    // Loading spinner should be present and content should not be visible
-    expect(screen.queryByText('Test Content')).not.toBeInTheDocument()
-    expect(screen.getByText('Loading content...')).toBeInTheDocument()
-  })
+      </TestWrapper>,
+    );
 
-  it('applies correct transition direction classes', () => {
+    // Loading spinner should be present and content should not be visible
+    expect(screen.queryByText("Test Content")).not.toBeInTheDocument();
+    expect(screen.getByText("Loading content...")).toBeInTheDocument();
+  });
+
+  it("applies correct transition direction classes", () => {
     const { rerender } = render(
       <TestWrapper>
         <PageTransition direction="slide-left" transitionKey="test1">
           <div>Content 1</div>
         </PageTransition>
-      </TestWrapper>
-    )
-    
-    expect(screen.getByText('Content 1')).toBeInTheDocument()
-    
+      </TestWrapper>,
+    );
+
+    expect(screen.getByText("Content 1")).toBeInTheDocument();
+
     rerender(
       <TestWrapper>
         <PageTransition direction="slide-right" transitionKey="test2">
           <div>Content 2</div>
         </PageTransition>
-      </TestWrapper>
-    )
-    
-    expect(screen.getByText('Content 2')).toBeInTheDocument()
-  })
-})
+      </TestWrapper>,
+    );
 
-describe('SectionTransition', () => {
-  it('renders section with correct props', () => {
+    expect(screen.getByText("Content 2")).toBeInTheDocument();
+  });
+});
+
+describe("SectionTransition", () => {
+  it("renders section with correct props", () => {
     render(
       <TestWrapper>
         <SectionTransition sectionId="test-section" className="test-class">
           <div>Section Content</div>
         </SectionTransition>
-      </TestWrapper>
-    )
-    
-    const section = screen.getByText('Section Content').closest('section')
-    expect(section).toHaveClass('test-class')
-    expect(screen.getByText('Section Content')).toBeInTheDocument()
-  })
-})
+      </TestWrapper>,
+    );
 
-describe('RouteTransition', () => {
-  it('renders with pathname key', () => {
+    const section = screen.getByText("Section Content").closest("section");
+    expect(section).toHaveClass("test-class");
+    expect(screen.getByText("Section Content")).toBeInTheDocument();
+  });
+});
+
+describe("RouteTransition", () => {
+  it("renders with pathname key", () => {
     render(
       <TestWrapper>
         <RouteTransition pathname="/test" className="route-class">
           <div>Route Content</div>
         </RouteTransition>
-      </TestWrapper>
-    )
-    
-    expect(screen.getByText('Route Content')).toBeInTheDocument()
-  })
-})
+      </TestWrapper>,
+    );
 
-describe('usePageTransition', () => {
+    expect(screen.getByText("Route Content")).toBeInTheDocument();
+  });
+});
+
+describe("usePageTransition", () => {
   const TestComponent = () => {
-    const { isTransitioning, transitionDirection, startTransition, endTransition } = usePageTransition()
-    
+    const {
+      isTransitioning,
+      transitionDirection,
+      startTransition,
+      endTransition,
+    } = usePageTransition();
+
     return (
       <div>
         <div data-testid="transition-state">
-          {isTransitioning ? 'transitioning' : 'idle'}
+          {isTransitioning ? "transitioning" : "idle"}
         </div>
         <div data-testid="transition-direction">{transitionDirection}</div>
-        <button onClick={() => startTransition('forward')}>Start Forward</button>
-        <button onClick={() => startTransition('backward')}>Start Backward</button>
+        <button onClick={() => startTransition("forward")}>
+          Start Forward
+        </button>
+        <button onClick={() => startTransition("backward")}>
+          Start Backward
+        </button>
         <button onClick={endTransition}>End Transition</button>
       </div>
-    )
-  }
+    );
+  };
 
-  it('manages transition state correctly', async () => {
+  it("manages transition state correctly", async () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
-    )
-    
-    expect(screen.getByTestId('transition-state')).toHaveTextContent('idle')
-    expect(screen.getByTestId('transition-direction')).toHaveTextContent('forward')
-    
-    fireEvent.click(screen.getByText('Start Forward'))
-    expect(screen.getByTestId('transition-state')).toHaveTextContent('transitioning')
-    expect(screen.getByTestId('transition-direction')).toHaveTextContent('forward')
-    
-    fireEvent.click(screen.getByText('Start Backward'))
-    expect(screen.getByTestId('transition-direction')).toHaveTextContent('backward')
-    
-    fireEvent.click(screen.getByText('End Transition'))
-    expect(screen.getByTestId('transition-state')).toHaveTextContent('idle')
-  })
+      </TestWrapper>,
+    );
 
-  it('auto-ends transition after timeout', async () => {
-    jest.useFakeTimers()
-    
+    expect(screen.getByTestId("transition-state")).toHaveTextContent("idle");
+    expect(screen.getByTestId("transition-direction")).toHaveTextContent(
+      "forward",
+    );
+
+    fireEvent.click(screen.getByText("Start Forward"));
+    expect(screen.getByTestId("transition-state")).toHaveTextContent(
+      "transitioning",
+    );
+    expect(screen.getByTestId("transition-direction")).toHaveTextContent(
+      "forward",
+    );
+
+    fireEvent.click(screen.getByText("Start Backward"));
+    expect(screen.getByTestId("transition-direction")).toHaveTextContent(
+      "backward",
+    );
+
+    fireEvent.click(screen.getByText("End Transition"));
+    expect(screen.getByTestId("transition-state")).toHaveTextContent("idle");
+  });
+
+  it("auto-ends transition after timeout", async () => {
+    jest.useFakeTimers();
+
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
-    )
-    
-    fireEvent.click(screen.getByText('Start Forward'))
-    expect(screen.getByTestId('transition-state')).toHaveTextContent('transitioning')
-    
+      </TestWrapper>,
+    );
+
+    fireEvent.click(screen.getByText("Start Forward"));
+    expect(screen.getByTestId("transition-state")).toHaveTextContent(
+      "transitioning",
+    );
+
     // Fast-forward time
-    jest.advanceTimersByTime(700)
-    
-    await waitFor(() => {
-      expect(screen.getByTestId('transition-state')).toHaveTextContent('idle')
-    })
-    
-    jest.useRealTimers()
-  })
-})
+    jest.advanceTimersByTime(700);
 
-describe('Focus Management', () => {
-  it('focuses main content after transition', () => {
+    await waitFor(() => {
+      expect(screen.getByTestId("transition-state")).toHaveTextContent("idle");
+    });
+
+    jest.useRealTimers();
+  });
+});
+
+describe("Focus Management", () => {
+  it("focuses main content after transition", () => {
     // Create a main element
-    const main = document.createElement('main')
-    main.tabIndex = -1
-    document.body.appendChild(main)
-    
+    const main = document.createElement("main");
+    main.tabIndex = -1;
+    document.body.appendChild(main);
+
     render(
       <TestWrapper>
         <RouteTransition pathname="/test">
@@ -241,16 +270,16 @@ describe('Focus Management', () => {
             <div>Content</div>
           </main>
         </RouteTransition>
-      </TestWrapper>
-    )
-    
-    // Clean up
-    document.body.removeChild(main)
-  })
-})
+      </TestWrapper>,
+    );
 
-describe('Accessibility', () => {
-  it('maintains proper ARIA attributes during transitions', () => {
+    // Clean up
+    document.body.removeChild(main);
+  });
+});
+
+describe("Accessibility", () => {
+  it("maintains proper ARIA attributes during transitions", () => {
     render(
       <TestWrapper>
         <PageTransition>
@@ -258,24 +287,24 @@ describe('Accessibility', () => {
             <h1>Accessible Content</h1>
           </div>
         </PageTransition>
-      </TestWrapper>
-    )
-    
-    const mainContent = screen.getByRole('main')
-    expect(mainContent).toHaveAttribute('aria-label', 'Main content')
-  })
+      </TestWrapper>,
+    );
 
-  it('preserves focus indicators during transitions', () => {
+    const mainContent = screen.getByRole("main");
+    expect(mainContent).toHaveAttribute("aria-label", "Main content");
+  });
+
+  it("preserves focus indicators during transitions", () => {
     render(
       <TestWrapper>
         <PageTransition>
           <button>Focusable Button</button>
         </PageTransition>
-      </TestWrapper>
-    )
-    
-    const button = screen.getByRole('button')
-    button.focus()
-    expect(button).toHaveFocus()
-  })
-})
+      </TestWrapper>,
+    );
+
+    const button = screen.getByRole("button");
+    button.focus();
+    expect(button).toHaveFocus();
+  });
+});

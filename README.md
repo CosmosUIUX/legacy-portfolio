@@ -47,6 +47,7 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 ## 🎨 Pages Overview
 
 ### Homepage (`/`)
+
 - Hero section with animated text and parallax effects
 - Featured products showcase
 - Materials section with interactive swatches
@@ -54,35 +55,41 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 - Company information
 
 ### About (`/about`)
+
 - Company story and values
 - Team information
 - Mission and vision
 
 ### Services (`/services`)
+
 - Comprehensive service offerings
 - Interior design services
 - Development and construction services
 - Consultation and project management
 
 ### Interior Design (`/interior-design`)
+
 - Design consultation services
 - Space planning
 - Lighting design
 - Custom solutions
 
 ### Development (`/development`)
+
 - Residential development
 - Commercial construction
 - Renovation and restoration
 - Project management
 
 ### Portfolio (`/portfolio`)
+
 - Project showcase with filtering
 - Case studies
 - Before/after galleries
 - Client testimonials
 
 ### Contact (`/contact`)
+
 - Contact form
 - Company information
 - Location map
@@ -91,11 +98,13 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 ## 🚀 Getting Started
 
 1. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Run development server**:
+
    ```bash
    npm run dev
    ```
@@ -113,6 +122,7 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 ## 🎯 Key Features Implemented
 
 ### ✅ Fixed Issues
+
 - **TypeScript Errors**: Resolved all type safety issues
 - **ESLint Warnings**: Fixed unused variables and React entity escaping
 - **Build Errors**: Application now builds successfully
@@ -120,6 +130,7 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 - **Navigation**: Implemented proper routing between pages
 
 ### ✅ New Pages Created
+
 - About page with company story and values
 - Interior Design services page
 - Development services page
@@ -128,6 +139,7 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 - Contact page with form and information
 
 ### ✅ Enhanced Components
+
 - **Header**: Mobile-responsive navigation with smooth animations
 - **Footer**: Comprehensive footer with links and social media
 - **Product Cards**: Interactive product showcase with quick look modals
@@ -137,18 +149,21 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 ## 🔄 Future Enhancements
 
 ### Phase 2: Content Management
+
 - [ ] Add CMS integration (Sanity/Contentful)
 - [ ] Dynamic project portfolio
 - [ ] Blog/news section
 - [ ] Client testimonials system
 
 ### Phase 3: Advanced Features
+
 - [ ] Online booking system
 - [ ] Project cost calculator
 - [ ] Virtual consultation scheduling
 - [ ] 3D visualization integration
 
 ### Phase 4: Performance & Analytics
+
 - [ ] Advanced SEO optimization
 - [ ] Analytics integration
 - [ ] Performance monitoring
@@ -157,6 +172,7 @@ A modern, responsive website for Legacy Interiors and Developers, showcasing int
 ## 🎨 Design System
 
 The application uses a consistent design system with:
+
 - **Colors**: Neutral palette with accent colors
 - **Typography**: Inter font family with defined scales
 - **Spacing**: Consistent spacing scale
@@ -166,6 +182,7 @@ The application uses a consistent design system with:
 ## 📱 Responsive Design
 
 The website is fully responsive with breakpoints:
+
 - Mobile: 320px - 768px
 - Tablet: 768px - 1024px
 - Desktop: 1024px+
@@ -185,4 +202,5 @@ This project is proprietary and confidential. All rights reserved by Legacy Inte
 ---
 
 Built with ❤️ by the Legacy team
+
 # legacy-portfolio

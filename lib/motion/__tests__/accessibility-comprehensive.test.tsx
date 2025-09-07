@@ -1,41 +1,49 @@
 // Comprehensive accessibility tests for Motion.dev animations
-import React from 'react'
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { motion } from '@/lib/motion'
-import { 
-  renderWithMotion, 
-  AccessibilityTestUtils, 
-  setupAnimationTestEnvironment 
-} from '../test-utils'
-import { MotionProvider } from '../provider'
-import { useMotion, useStaggerAnimation, useTextAnimation } from '../hooks'
-import { 
-  useReducedMotion, 
-  useScreenReader, 
+import React from "react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { motion } from "@/lib/motion";
+import {
+  renderWithMotion,
+  AccessibilityTestUtils,
+  setupAnimationTestEnvironment,
+} from "../test-utils";
+import { MotionProvider } from "../provider";
+import { useMotion, useStaggerAnimation, useTextAnimation } from "../hooks";
+import {
+  useReducedMotion,
+  useScreenReader,
   useKeyboardNavigation,
   useAriaAnnouncements,
   getAriaProps,
-  validateAnimationSafety 
-} from '../accessibility'
+  validateAnimationSafety,
+} from "../accessibility";
 
 // Setup test environment
-setupAnimationTestEnvironment()
+setupAnimationTestEnvironment();
 
 // Mock screen reader detection
 const mockScreenReaderDetection = (isScreenReader: boolean) => {
-  Object.defineProperty(navigator, 'userAgent', {
+  Object.defineProperty(navigator, "userAgent", {
     writable: true,
-    value: isScreenReader ? 'NVDA' : 'Chrome'
-  })
-}
+    value: isScreenReader ? "NVDA" : "Chrome",
+  });
+};
 
 // Mock reduced motion preference
 const mockReducedMotionPreference = (reducedMotion: boolean) => {
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(window, "matchMedia", {
     writable: true,
-    value: jest.fn().mockImplementation(query => ({
-      matches: query.includes('prefers-reduced-motion: reduce') ? reducedMotion : false,
+    value: jest.fn().mockImplementation((query) => ({
+      matches: query.includes("prefers-reduced-motion: reduce")
+        ? reducedMotion
+        : false,
       media: query,
       onchange: null,
       addListener: jest.fn(),
@@ -44,40 +52,40 @@ const mockReducedMotionPreference = (reducedMotion: boolean) => {
       removeEventListener: jest.fn(),
       dispatchEvent: jest.fn(),
     })),
-  })
-}
+  });
+};
 
 // Test components
-function AccessibleAnimatedButton({ 
-  children, 
-  onAnimationStart, 
-  onAnimationComplete 
+function AccessibleAnimatedButton({
+  children,
+  onAnimationStart,
+  onAnimationComplete,
 }: {
-  children: React.ReactNode
-  onAnimationStart?: () => void
-  onAnimationComplete?: () => void
+  children: React.ReactNode;
+  onAnimationStart?: () => void;
+  onAnimationComplete?: () => void;
 }) {
   const { ref, animationProps, eventHandlers, isActive } = useMotion({
-    trigger: 'hover',
-    duration: 300
-  })
+    trigger: "hover",
+    duration: 300,
+  });
 
   React.useEffect(() => {
     if (isActive && onAnimationStart) {
-      onAnimationStart()
+      onAnimationStart();
     }
-  }, [isActive, onAnimationStart])
+  }, [isActive, onAnimationStart]);
 
   React.useEffect(() => {
     if (isActive && onAnimationComplete) {
-      const timer = setTimeout(onAnimationComplete, 300)
-      return () => clearTimeout(timer)
+      const timer = setTimeout(onAnimationComplete, 300);
+      return () => clearTimeout(timer);
     }
-  }, [isActive, onAnimationComplete])
+  }, [isActive, onAnimationComplete]);
 
-  const ariaProps = getAriaProps('button', isActive ? 'animating' : 'idle', {
-    label: typeof children === 'string' ? children : 'Animated button'
-  })
+  const ariaProps = getAriaProps("button", isActive ? "animating" : "idle", {
+    label: typeof children === "string" ? children : "Animated button",
+  });
 
   return (
     <motion.button
@@ -90,47 +98,47 @@ function AccessibleAnimatedButton({
     >
       {children}
     </motion.button>
-  )
+  );
 }
 
-function AccessibleStaggeredList({ 
-  items, 
-  announceProgress = false 
+function AccessibleStaggeredList({
+  items,
+  announceProgress = false,
 }: {
-  items: string[]
-  announceProgress?: boolean
+  items: string[];
+  announceProgress?: boolean;
 }) {
   const { ref, getItemProps, currentIndex, isComplete } = useStaggerAnimation({
     items,
     staggerDelay: 100,
-    trigger: 'viewport'
-  })
+    trigger: "viewport",
+  });
 
-  const { announce } = useAriaAnnouncements()
+  const { announce } = useAriaAnnouncements();
 
   React.useEffect(() => {
     if (announceProgress && currentIndex >= 0) {
-      announce(`Loading item ${currentIndex + 1} of ${items.length}`)
+      announce(`Loading item ${currentIndex + 1} of ${items.length}`);
     }
-  }, [currentIndex, items.length, announce, announceProgress])
+  }, [currentIndex, items.length, announce, announceProgress]);
 
   React.useEffect(() => {
     if (isComplete && announceProgress) {
-      announce('All items loaded', 'assertive')
+      announce("All items loaded", "assertive");
     }
-  }, [isComplete, announce, announceProgress])
+  }, [isComplete, announce, announceProgress]);
 
   return (
-    <div 
-      ref={ref} 
+    <div
+      ref={ref}
       data-testid="accessible-staggered-list"
       role="list"
       aria-label={`List of ${items.length} items`}
       aria-busy={!isComplete}
     >
       {items.map((item, index) => {
-        const itemProps = getItemProps(index)
-        const isVisible = currentIndex >= index
+        const itemProps = getItemProps(index);
+        const isVisible = currentIndex >= index;
 
         return (
           <motion.div
@@ -144,32 +152,32 @@ function AccessibleStaggeredList({
           >
             {item}
           </motion.div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
-function AccessibleTextAnimation({ 
-  text, 
-  announceCompletion = false 
+function AccessibleTextAnimation({
+  text,
+  announceCompletion = false,
 }: {
-  text: string
-  announceCompletion?: boolean
+  text: string;
+  announceCompletion?: boolean;
 }) {
   const { displayText, isComplete } = useTextAnimation({
     text,
-    animationType: 'typewriter',
-    speed: 50
-  })
+    animationType: "typewriter",
+    speed: 50,
+  });
 
-  const { announce } = useAriaAnnouncements()
+  const { announce } = useAriaAnnouncements();
 
   React.useEffect(() => {
     if (isComplete && announceCompletion) {
-      announce(`Text animation complete: ${text}`)
+      announce(`Text animation complete: ${text}`);
     }
-  }, [isComplete, text, announce, announceCompletion])
+  }, [isComplete, text, announce, announceCompletion]);
 
   return (
     <div
@@ -180,21 +188,21 @@ function AccessibleTextAnimation({
     >
       {displayText}
     </div>
-  )
+  );
 }
 
 function KeyboardNavigationTest() {
-  const { isKeyboardUser, preserveFocus } = useKeyboardNavigation()
-  const [focusedIndex, setFocusedIndex] = React.useState(-1)
+  const { isKeyboardUser, preserveFocus } = useKeyboardNavigation();
+  const [focusedIndex, setFocusedIndex] = React.useState(-1);
 
-  const buttons = ['First', 'Second', 'Third']
+  const buttons = ["First", "Second", "Third"];
 
   return (
     <div data-testid="keyboard-navigation-test">
       <div data-testid="keyboard-user-indicator">
         Keyboard user: {isKeyboardUser.toString()}
       </div>
-      
+
       {buttons.map((label, index) => (
         <AccessibleAnimatedButton
           key={index}
@@ -203,223 +211,218 @@ function KeyboardNavigationTest() {
           {label}
         </AccessibleAnimatedButton>
       ))}
-      
-      <button
-        onClick={preserveFocus}
-        data-testid="preserve-focus-button"
-      >
+
+      <button onClick={preserveFocus} data-testid="preserve-focus-button">
         Preserve Focus
       </button>
-      
+
       <div data-testid="focused-index">{focusedIndex}</div>
     </div>
-  )
+  );
 }
 
-describe('Comprehensive Accessibility Tests', () => {
+describe("Comprehensive Accessibility Tests", () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    jest.clearAllMocks();
     // Reset mocks to default state
-    mockReducedMotionPreference(false)
-    mockScreenReaderDetection(false)
-  })
+    mockReducedMotionPreference(false);
+    mockScreenReaderDetection(false);
+  });
 
-  describe('Reduced Motion Compliance', () => {
-    it('should disable animations when reduced motion is preferred', async () => {
-      mockReducedMotionPreference(true)
+  describe("Reduced Motion Compliance", () => {
+    it("should disable animations when reduced motion is preferred", async () => {
+      mockReducedMotionPreference(true);
 
-      const onAnimationStart = jest.fn()
-      
+      const onAnimationStart = jest.fn();
+
       renderWithMotion(
         <AccessibleAnimatedButton onAnimationStart={onAnimationStart}>
           Test Button
         </AccessibleAnimatedButton>,
-        { providerProps: { reducedMotion: true } }
-      )
+        { providerProps: { reducedMotion: true } },
+      );
 
-      const button = screen.getByTestId('accessible-animated-button')
-      
+      const button = screen.getByTestId("accessible-animated-button");
+
       // Hover should not trigger animation
-      await userEvent.hover(button)
-      
-      // Animation should not start
-      expect(onAnimationStart).not.toHaveBeenCalled()
-    })
+      await userEvent.hover(button);
 
-    it('should provide alternative feedback when animations are disabled', async () => {
-      mockReducedMotionPreference(true)
+      // Animation should not start
+      expect(onAnimationStart).not.toHaveBeenCalled();
+    });
+
+    it("should provide alternative feedback when animations are disabled", async () => {
+      mockReducedMotionPreference(true);
 
       renderWithMotion(
-        <AccessibleAnimatedButton>
-          Test Button
-        </AccessibleAnimatedButton>,
-        { providerProps: { reducedMotion: true } }
-      )
+        <AccessibleAnimatedButton>Test Button</AccessibleAnimatedButton>,
+        { providerProps: { reducedMotion: true } },
+      );
 
-      const button = screen.getByTestId('accessible-animated-button')
-      
+      const button = screen.getByTestId("accessible-animated-button");
+
       // Should still be interactive
-      expect(button).toBeEnabled()
-      expect(button).toHaveAttribute('aria-label')
-      
+      expect(button).toBeEnabled();
+      expect(button).toHaveAttribute("aria-label");
+
       // Should have appropriate ARIA attributes for non-animated state
-      expect(button).toHaveAttribute('aria-busy', 'false')
-    })
+      expect(button).toHaveAttribute("aria-busy", "false");
+    });
 
-    it('should respect system reduced motion preference', async () => {
+    it("should respect system reduced motion preference", async () => {
       // Mock system preference
-      mockReducedMotionPreference(true)
+      mockReducedMotionPreference(true);
 
       const TestComponent = () => {
-        const reducedMotion = useReducedMotion()
+        const reducedMotion = useReducedMotion();
         return (
           <div data-testid="reduced-motion-status">
             {reducedMotion.toString()}
           </div>
-        )
-      }
+        );
+      };
 
-      render(<TestComponent />)
+      render(<TestComponent />);
 
-      const status = screen.getByTestId('reduced-motion-status')
-      expect(status).toHaveTextContent('true')
-    })
+      const status = screen.getByTestId("reduced-motion-status");
+      expect(status).toHaveTextContent("true");
+    });
 
-    it('should handle reduced motion preference changes', async () => {
+    it("should handle reduced motion preference changes", async () => {
       const TestComponent = () => {
-        const reducedMotion = useReducedMotion()
+        const reducedMotion = useReducedMotion();
         return (
           <div data-testid="reduced-motion-status">
             {reducedMotion.toString()}
           </div>
-        )
-      }
+        );
+      };
 
-      render(<TestComponent />)
+      render(<TestComponent />);
 
-      let status = screen.getByTestId('reduced-motion-status')
-      expect(status).toHaveTextContent('false')
+      let status = screen.getByTestId("reduced-motion-status");
+      expect(status).toHaveTextContent("false");
 
       // Simulate preference change
-      mockReducedMotionPreference(true)
-      
+      mockReducedMotionPreference(true);
+
       // Trigger a re-render by dispatching a media query change event
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-      fireEvent(mediaQuery, new Event('change'))
+      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      fireEvent(mediaQuery, new Event("change"));
 
       await waitFor(() => {
-        status = screen.getByTestId('reduced-motion-status')
-        expect(status).toHaveTextContent('true')
-      })
-    })
+        status = screen.getByTestId("reduced-motion-status");
+        expect(status).toHaveTextContent("true");
+      });
+    });
 
-    it('should provide reduced motion alternatives for complex animations', async () => {
-      mockReducedMotionPreference(true)
+    it("should provide reduced motion alternatives for complex animations", async () => {
+      mockReducedMotionPreference(true);
 
       renderWithMotion(
-        <AccessibleStaggeredList 
-          items={['Item 1', 'Item 2', 'Item 3']}
+        <AccessibleStaggeredList
+          items={["Item 1", "Item 2", "Item 3"]}
           announceProgress={true}
         />,
-        { providerProps: { reducedMotion: true } }
-      )
+        { providerProps: { reducedMotion: true } },
+      );
 
-      const list = screen.getByTestId('accessible-staggered-list')
-      
+      const list = screen.getByTestId("accessible-staggered-list");
+
       // All items should be immediately visible when reduced motion is enabled
-      const items = screen.getAllByRole('listitem')
-      expect(items).toHaveLength(3)
-      
-      // List should not be marked as busy
-      expect(list).toHaveAttribute('aria-busy', 'false')
-    })
-  })
+      const items = screen.getAllByRole("listitem");
+      expect(items).toHaveLength(3);
 
-  describe('Screen Reader Compatibility', () => {
-    it('should detect screen reader usage', async () => {
-      mockScreenReaderDetection(true)
+      // List should not be marked as busy
+      expect(list).toHaveAttribute("aria-busy", "false");
+    });
+  });
+
+  describe("Screen Reader Compatibility", () => {
+    it("should detect screen reader usage", async () => {
+      mockScreenReaderDetection(true);
 
       const TestComponent = () => {
-        const isScreenReader = useScreenReader()
+        const isScreenReader = useScreenReader();
         return (
           <div data-testid="screen-reader-status">
             {isScreenReader.toString()}
           </div>
-        )
-      }
+        );
+      };
 
-      render(<TestComponent />)
+      render(<TestComponent />);
 
-      const status = screen.getByTestId('screen-reader-status')
-      expect(status).toHaveTextContent('true')
-    })
+      const status = screen.getByTestId("screen-reader-status");
+      expect(status).toHaveTextContent("true");
+    });
 
-    it('should provide appropriate ARIA attributes during animations', async () => {
-      const onAnimationStart = jest.fn()
+    it("should provide appropriate ARIA attributes during animations", async () => {
+      const onAnimationStart = jest.fn();
 
       renderWithMotion(
         <AccessibleAnimatedButton onAnimationStart={onAnimationStart}>
           Test Button
-        </AccessibleAnimatedButton>
-      )
+        </AccessibleAnimatedButton>,
+      );
 
-      const button = screen.getByTestId('accessible-animated-button')
-      
+      const button = screen.getByTestId("accessible-animated-button");
+
       // Initial state
-      expect(button).toHaveAttribute('aria-busy', 'false')
-      expect(button).toHaveAttribute('aria-pressed', 'false')
-      
+      expect(button).toHaveAttribute("aria-busy", "false");
+      expect(button).toHaveAttribute("aria-pressed", "false");
+
       // Trigger animation
-      await userEvent.hover(button)
-      
+      await userEvent.hover(button);
+
       await waitFor(() => {
-        expect(onAnimationStart).toHaveBeenCalled()
-      })
+        expect(onAnimationStart).toHaveBeenCalled();
+      });
 
       // During animation
-      expect(button).toHaveAttribute('aria-busy', 'true')
-      expect(button).toHaveAttribute('aria-pressed', 'true')
-    })
+      expect(button).toHaveAttribute("aria-busy", "true");
+      expect(button).toHaveAttribute("aria-pressed", "true");
+    });
 
-    it('should announce animation progress to screen readers', async () => {
+    it("should announce animation progress to screen readers", async () => {
       renderWithMotion(
-        <AccessibleStaggeredList 
-          items={['Item 1', 'Item 2', 'Item 3']}
+        <AccessibleStaggeredList
+          items={["Item 1", "Item 2", "Item 3"]}
           announceProgress={true}
-        />
-      )
+        />,
+      );
 
       // Check for ARIA live regions
-      const liveRegions = document.querySelectorAll('[aria-live]')
-      expect(liveRegions.length).toBeGreaterThan(0)
+      const liveRegions = document.querySelectorAll("[aria-live]");
+      expect(liveRegions.length).toBeGreaterThan(0);
 
       // List should be marked as busy initially
-      const list = screen.getByTestId('accessible-staggered-list')
-      expect(list).toHaveAttribute('aria-busy', 'true')
-    })
+      const list = screen.getByTestId("accessible-staggered-list");
+      expect(list).toHaveAttribute("aria-busy", "true");
+    });
 
-    it('should handle text animation announcements', async () => {
+    it("should handle text animation announcements", async () => {
       renderWithMotion(
-        <AccessibleTextAnimation 
+        <AccessibleTextAnimation
           text="Hello World"
           announceCompletion={true}
-        />
-      )
+        />,
+      );
 
-      const textElement = screen.getByTestId('accessible-text-animation')
-      
+      const textElement = screen.getByTestId("accessible-text-animation");
+
       // Should have live region
-      expect(textElement).toHaveAttribute('aria-live', 'polite')
-      
-      // Should be marked as busy initially
-      expect(textElement).toHaveAttribute('aria-busy', 'true')
-      
-      // Should have appropriate label
-      expect(textElement).toHaveAttribute('aria-label')
-    })
+      expect(textElement).toHaveAttribute("aria-live", "polite");
 
-    it('should not interfere with screen reader navigation', async () => {
-      mockScreenReaderDetection(true)
+      // Should be marked as busy initially
+      expect(textElement).toHaveAttribute("aria-busy", "true");
+
+      // Should have appropriate label
+      expect(textElement).toHaveAttribute("aria-label");
+    });
+
+    it("should not interfere with screen reader navigation", async () => {
+      mockScreenReaderDetection(true);
 
       renderWithMotion(
         <div>
@@ -429,82 +432,88 @@ describe('Comprehensive Accessibility Tests', () => {
           </AccessibleAnimatedButton>
           <p>Some content after the button</p>
         </div>,
-        { providerProps: { reducedMotion: false } }
-      )
+        { providerProps: { reducedMotion: false } },
+      );
 
-      const heading = screen.getByRole('heading')
-      const button = screen.getByRole('button')
-      const paragraph = screen.getByText('Some content after the button')
+      const heading = screen.getByRole("heading");
+      const button = screen.getByRole("button");
+      const paragraph = screen.getByText("Some content after the button");
 
       // All elements should be accessible
-      expect(heading).toBeInTheDocument()
-      expect(button).toBeInTheDocument()
-      expect(paragraph).toBeInTheDocument()
+      expect(heading).toBeInTheDocument();
+      expect(button).toBeInTheDocument();
+      expect(paragraph).toBeInTheDocument();
 
       // Button should be focusable
-      button.focus()
-      expect(button).toHaveFocus()
-    })
-  })
+      button.focus();
+      expect(button).toHaveFocus();
+    });
+  });
 
-  describe('Keyboard Navigation', () => {
-    it('should detect keyboard usage', async () => {
-      renderWithMotion(<KeyboardNavigationTest />)
+  describe("Keyboard Navigation", () => {
+    it("should detect keyboard usage", async () => {
+      renderWithMotion(<KeyboardNavigationTest />);
 
-      const indicator = screen.getByTestId('keyboard-user-indicator')
-      expect(indicator).toHaveTextContent('Keyboard user: false')
+      const indicator = screen.getByTestId("keyboard-user-indicator");
+      expect(indicator).toHaveTextContent("Keyboard user: false");
 
       // Simulate Tab key press
-      fireEvent.keyDown(document, { key: 'Tab' })
+      fireEvent.keyDown(document, { key: "Tab" });
 
       await waitFor(() => {
-        expect(indicator).toHaveTextContent('Keyboard user: true')
-      })
-    })
+        expect(indicator).toHaveTextContent("Keyboard user: true");
+      });
+    });
 
-    it('should maintain focus during animations', async () => {
-      renderWithMotion(<KeyboardNavigationTest />)
+    it("should maintain focus during animations", async () => {
+      renderWithMotion(<KeyboardNavigationTest />);
 
-      const buttons = screen.getAllByRole('button').filter(btn => 
-        btn.getAttribute('data-testid') === 'accessible-animated-button'
-      )
-      
+      const buttons = screen
+        .getAllByRole("button")
+        .filter(
+          (btn) =>
+            btn.getAttribute("data-testid") === "accessible-animated-button",
+        );
+
       // Focus first button
-      buttons[0].focus()
-      expect(buttons[0]).toHaveFocus()
+      buttons[0].focus();
+      expect(buttons[0]).toHaveFocus();
 
       // Trigger animation with hover
-      await userEvent.hover(buttons[0])
+      await userEvent.hover(buttons[0]);
 
       // Focus should be maintained
-      expect(buttons[0]).toHaveFocus()
-    })
+      expect(buttons[0]).toHaveFocus();
+    });
 
-    it('should support keyboard navigation between animated elements', async () => {
-      renderWithMotion(<KeyboardNavigationTest />)
+    it("should support keyboard navigation between animated elements", async () => {
+      renderWithMotion(<KeyboardNavigationTest />);
 
-      const buttons = screen.getAllByRole('button').filter(btn => 
-        btn.getAttribute('data-testid') === 'accessible-animated-button'
-      )
+      const buttons = screen
+        .getAllByRole("button")
+        .filter(
+          (btn) =>
+            btn.getAttribute("data-testid") === "accessible-animated-button",
+        );
 
       // Tab through buttons
-      buttons[0].focus()
-      expect(buttons[0]).toHaveFocus()
+      buttons[0].focus();
+      expect(buttons[0]).toHaveFocus();
 
-      await userEvent.tab()
-      expect(buttons[1]).toHaveFocus()
+      await userEvent.tab();
+      expect(buttons[1]).toHaveFocus();
 
-      await userEvent.tab()
-      expect(buttons[2]).toHaveFocus()
-    })
+      await userEvent.tab();
+      expect(buttons[2]).toHaveFocus();
+    });
 
-    it('should handle Enter and Space key activation', async () => {
-      const onClick = jest.fn()
+    it("should handle Enter and Space key activation", async () => {
+      const onClick = jest.fn();
 
       const TestButton = () => {
         const { ref, animationProps, eventHandlers } = useMotion({
-          trigger: 'click'
-        })
+          trigger: "click",
+        });
 
         return (
           <motion.button
@@ -516,33 +525,33 @@ describe('Comprehensive Accessibility Tests', () => {
           >
             Click me
           </motion.button>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<TestButton />)
+      renderWithMotion(<TestButton />);
 
-      const button = screen.getByTestId('keyboard-activated-button')
-      
+      const button = screen.getByTestId("keyboard-activated-button");
+
       // Focus button
-      button.focus()
-      
+      button.focus();
+
       // Activate with Enter
-      fireEvent.keyDown(button, { key: 'Enter' })
-      expect(onClick).toHaveBeenCalledTimes(1)
+      fireEvent.keyDown(button, { key: "Enter" });
+      expect(onClick).toHaveBeenCalledTimes(1);
 
       // Activate with Space
-      fireEvent.keyDown(button, { key: ' ' })
-      expect(onClick).toHaveBeenCalledTimes(2)
-    })
+      fireEvent.keyDown(button, { key: " " });
+      expect(onClick).toHaveBeenCalledTimes(2);
+    });
 
-    it('should preserve focus order with dynamic content', async () => {
+    it("should preserve focus order with dynamic content", async () => {
       const DynamicContentTest = () => {
-        const [showExtra, setShowExtra] = React.useState(false)
+        const [showExtra, setShowExtra] = React.useState(false);
 
         return (
           <div>
             <button data-testid="button-1">Button 1</button>
-            <button 
+            <button
               onClick={() => setShowExtra(!showExtra)}
               data-testid="toggle-button"
             >
@@ -555,72 +564,72 @@ describe('Comprehensive Accessibility Tests', () => {
             )}
             <button data-testid="button-2">Button 2</button>
           </div>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<DynamicContentTest />)
+      renderWithMotion(<DynamicContentTest />);
 
-      const button1 = screen.getByTestId('button-1')
-      const toggleButton = screen.getByTestId('toggle-button')
-      const button2 = screen.getByTestId('button-2')
+      const button1 = screen.getByTestId("button-1");
+      const toggleButton = screen.getByTestId("toggle-button");
+      const button2 = screen.getByTestId("button-2");
 
       // Initial tab order
-      button1.focus()
-      await userEvent.tab()
-      expect(toggleButton).toHaveFocus()
-      await userEvent.tab()
-      expect(button2).toHaveFocus()
+      button1.focus();
+      await userEvent.tab();
+      expect(toggleButton).toHaveFocus();
+      await userEvent.tab();
+      expect(button2).toHaveFocus();
 
       // Add dynamic content
-      toggleButton.focus()
-      await userEvent.click(toggleButton)
+      toggleButton.focus();
+      await userEvent.click(toggleButton);
 
-      const dynamicButton = screen.getByTestId('accessible-animated-button')
-      expect(dynamicButton).toBeInTheDocument()
+      const dynamicButton = screen.getByTestId("accessible-animated-button");
+      expect(dynamicButton).toBeInTheDocument();
 
       // Tab order should include dynamic button
-      toggleButton.focus()
-      await userEvent.tab()
-      expect(dynamicButton).toHaveFocus()
-      await userEvent.tab()
-      expect(button2).toHaveFocus()
-    })
-  })
+      toggleButton.focus();
+      await userEvent.tab();
+      expect(dynamicButton).toHaveFocus();
+      await userEvent.tab();
+      expect(button2).toHaveFocus();
+    });
+  });
 
-  describe('ARIA Announcements', () => {
-    it('should create appropriate live regions', async () => {
+  describe("ARIA Announcements", () => {
+    it("should create appropriate live regions", async () => {
       const TestComponent = () => {
-        const { announce } = useAriaAnnouncements()
-        
+        const { announce } = useAriaAnnouncements();
+
         return (
-          <button 
-            onClick={() => announce('Test announcement')}
+          <button
+            onClick={() => announce("Test announcement")}
             data-testid="announce-button"
           >
             Announce
           </button>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<TestComponent />)
+      renderWithMotion(<TestComponent />);
 
       // Should create live regions
-      const politeRegion = document.querySelector('[aria-live="polite"]')
-      const assertiveRegion = document.querySelector('[aria-live="assertive"]')
-      
-      expect(politeRegion).toBeInTheDocument()
-      expect(assertiveRegion).toBeInTheDocument()
-    })
+      const politeRegion = document.querySelector('[aria-live="polite"]');
+      const assertiveRegion = document.querySelector('[aria-live="assertive"]');
 
-    it('should announce animation state changes', async () => {
+      expect(politeRegion).toBeInTheDocument();
+      expect(assertiveRegion).toBeInTheDocument();
+    });
+
+    it("should announce animation state changes", async () => {
       const StateChangeTest = () => {
-        const [isAnimating, setIsAnimating] = React.useState(false)
-        const { announce } = useAriaAnnouncements()
+        const [isAnimating, setIsAnimating] = React.useState(false);
+        const { announce } = useAriaAnnouncements();
 
         const handleToggle = () => {
-          setIsAnimating(!isAnimating)
-          announce(isAnimating ? 'Animation stopped' : 'Animation started')
-        }
+          setIsAnimating(!isAnimating);
+          announce(isAnimating ? "Animation stopped" : "Animation started");
+        };
 
         return (
           <div>
@@ -628,193 +637,182 @@ describe('Comprehensive Accessibility Tests', () => {
               Toggle Animation
             </button>
             <div data-testid="animation-status">
-              {isAnimating ? 'Animating' : 'Static'}
+              {isAnimating ? "Animating" : "Static"}
             </div>
           </div>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<StateChangeTest />)
+      renderWithMotion(<StateChangeTest />);
 
-      const toggleButton = screen.getByTestId('toggle-animation')
-      const status = screen.getByTestId('animation-status')
+      const toggleButton = screen.getByTestId("toggle-animation");
+      const status = screen.getByTestId("animation-status");
 
-      expect(status).toHaveTextContent('Static')
+      expect(status).toHaveTextContent("Static");
 
-      await userEvent.click(toggleButton)
-      expect(status).toHaveTextContent('Animating')
+      await userEvent.click(toggleButton);
+      expect(status).toHaveTextContent("Animating");
 
       // Check that announcement was made
-      const liveRegion = document.querySelector('[aria-live="polite"]')
-      expect(liveRegion).toHaveTextContent('Animation started')
-    })
+      const liveRegion = document.querySelector('[aria-live="polite"]');
+      expect(liveRegion).toHaveTextContent("Animation started");
+    });
 
-    it('should handle urgent announcements', async () => {
+    it("should handle urgent announcements", async () => {
       const UrgentAnnouncementTest = () => {
-        const { announce } = useAriaAnnouncements()
-        
+        const { announce } = useAriaAnnouncements();
+
         return (
-          <button 
-            onClick={() => announce('Urgent message', 'assertive')}
+          <button
+            onClick={() => announce("Urgent message", "assertive")}
             data-testid="urgent-announce-button"
           >
             Urgent Announce
           </button>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<UrgentAnnouncementTest />)
+      renderWithMotion(<UrgentAnnouncementTest />);
 
-      const button = screen.getByTestId('urgent-announce-button')
-      await userEvent.click(button)
+      const button = screen.getByTestId("urgent-announce-button");
+      await userEvent.click(button);
 
-      const assertiveRegion = document.querySelector('[aria-live="assertive"]')
-      expect(assertiveRegion).toHaveTextContent('Urgent message')
-    })
-  })
+      const assertiveRegion = document.querySelector('[aria-live="assertive"]');
+      expect(assertiveRegion).toHaveTextContent("Urgent message");
+    });
+  });
 
-  describe('Animation Safety Validation', () => {
-    it('should validate safe animation parameters', () => {
+  describe("Animation Safety Validation", () => {
+    it("should validate safe animation parameters", () => {
       const safeAnimation = {
         flashRate: 2,
         colorChanges: 3,
-        contrastRatio: 5.0
-      }
+        contrastRatio: 5.0,
+      };
 
-      const result = validateAnimationSafety(safeAnimation)
-      
-      expect(result.safe).toBe(true)
-      expect(result.warnings).toHaveLength(0)
-    })
+      const result = validateAnimationSafety(safeAnimation);
 
-    it('should detect unsafe flash rates', () => {
+      expect(result.safe).toBe(true);
+      expect(result.warnings).toHaveLength(0);
+    });
+
+    it("should detect unsafe flash rates", () => {
       const unsafeAnimation = {
-        flashRate: 5 // Above 3 flashes/second threshold
-      }
+        flashRate: 5, // Above 3 flashes/second threshold
+      };
 
-      const result = validateAnimationSafety(unsafeAnimation)
-      
-      expect(result.safe).toBe(false)
-      expect(result.warnings).toContain('Flash rate exceeds safe threshold (3 flashes/second)')
-    })
+      const result = validateAnimationSafety(unsafeAnimation);
 
-    it('should detect excessive color changes', () => {
+      expect(result.safe).toBe(false);
+      expect(result.warnings).toContain(
+        "Flash rate exceeds safe threshold (3 flashes/second)",
+      );
+    });
+
+    it("should detect excessive color changes", () => {
       const unsafeAnimation = {
-        colorChanges: 10 // Too many rapid color changes
-      }
+        colorChanges: 10, // Too many rapid color changes
+      };
 
-      const result = validateAnimationSafety(unsafeAnimation)
-      
-      expect(result.safe).toBe(false)
-      expect(result.warnings).toContain('Too many rapid color changes detected')
-    })
+      const result = validateAnimationSafety(unsafeAnimation);
 
-    it('should detect insufficient contrast', () => {
+      expect(result.safe).toBe(false);
+      expect(result.warnings).toContain(
+        "Too many rapid color changes detected",
+      );
+    });
+
+    it("should detect insufficient contrast", () => {
       const unsafeAnimation = {
-        contrastRatio: 3.0 // Below 4.5:1 minimum
-      }
+        contrastRatio: 3.0, // Below 4.5:1 minimum
+      };
 
-      const result = validateAnimationSafety(unsafeAnimation)
-      
-      expect(result.safe).toBe(false)
-      expect(result.warnings).toContain('Insufficient color contrast ratio (minimum 4.5:1)')
-    })
+      const result = validateAnimationSafety(unsafeAnimation);
 
-    it('should validate multiple safety criteria', () => {
+      expect(result.safe).toBe(false);
+      expect(result.warnings).toContain(
+        "Insufficient color contrast ratio (minimum 4.5:1)",
+      );
+    });
+
+    it("should validate multiple safety criteria", () => {
       const multipleIssues = {
         flashRate: 4,
         colorChanges: 8,
-        contrastRatio: 2.5
-      }
+        contrastRatio: 2.5,
+      };
 
-      const result = validateAnimationSafety(multipleIssues)
-      
-      expect(result.safe).toBe(false)
-      expect(result.warnings).toHaveLength(3)
-    })
-  })
+      const result = validateAnimationSafety(multipleIssues);
 
-  describe('Focus Management', () => {
-    it('should preserve focus during animation sequences', async () => {
+      expect(result.safe).toBe(false);
+      expect(result.warnings).toHaveLength(3);
+    });
+  });
+
+  describe("Focus Management", () => {
+    it("should preserve focus during animation sequences", async () => {
       const FocusPreservationTest = () => {
-        const [step, setStep] = React.useState(0)
-        
+        const [step, setStep] = React.useState(0);
+
         return (
           <div>
-            <button 
-              onClick={() => setStep(1)}
-              data-testid="start-sequence"
-            >
+            <button onClick={() => setStep(1)} data-testid="start-sequence">
               Start Sequence
             </button>
-            
+
             {step >= 1 && (
-              <AccessibleAnimatedButton>
-                Step 1 Button
-              </AccessibleAnimatedButton>
+              <AccessibleAnimatedButton>Step 1 Button</AccessibleAnimatedButton>
             )}
-            
+
             {step >= 2 && (
-              <AccessibleAnimatedButton>
-                Step 2 Button
-              </AccessibleAnimatedButton>
+              <AccessibleAnimatedButton>Step 2 Button</AccessibleAnimatedButton>
             )}
-            
-            <button 
-              onClick={() => setStep(step + 1)}
-              data-testid="next-step"
-            >
+
+            <button onClick={() => setStep(step + 1)} data-testid="next-step">
               Next Step
             </button>
           </div>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<FocusPreservationTest />)
+      renderWithMotion(<FocusPreservationTest />);
 
-      const startButton = screen.getByTestId('start-sequence')
-      const nextButton = screen.getByTestId('next-step')
+      const startButton = screen.getByTestId("start-sequence");
+      const nextButton = screen.getByTestId("next-step");
 
       // Start sequence
-      startButton.focus()
-      await userEvent.click(startButton)
+      startButton.focus();
+      await userEvent.click(startButton);
 
       // Focus should move to next interactive element
-      nextButton.focus()
-      await userEvent.click(nextButton)
+      nextButton.focus();
+      await userEvent.click(nextButton);
 
       // New button should be focusable
-      const step2Button = screen.getByText('Step 2 Button')
-      step2Button.focus()
-      expect(step2Button).toHaveFocus()
-    })
+      const step2Button = screen.getByText("Step 2 Button");
+      step2Button.focus();
+      expect(step2Button).toHaveFocus();
+    });
 
-    it('should handle focus trapping in modal animations', async () => {
+    it("should handle focus trapping in modal animations", async () => {
       const ModalTest = () => {
-        const [isOpen, setIsOpen] = React.useState(false)
-        
+        const [isOpen, setIsOpen] = React.useState(false);
+
         return (
           <div>
-            <button 
-              onClick={() => setIsOpen(true)}
-              data-testid="open-modal"
-            >
+            <button onClick={() => setIsOpen(true)} data-testid="open-modal">
               Open Modal
             </button>
-            
+
             {isOpen && (
-              <div 
-                role="dialog"
-                aria-modal="true"
-                data-testid="modal"
-              >
+              <div role="dialog" aria-modal="true" data-testid="modal">
                 <AccessibleAnimatedButton>
                   Modal Button 1
                 </AccessibleAnimatedButton>
                 <AccessibleAnimatedButton>
                   Modal Button 2
                 </AccessibleAnimatedButton>
-                <button 
+                <button
                   onClick={() => setIsOpen(false)}
                   data-testid="close-modal"
                 >
@@ -823,113 +821,108 @@ describe('Comprehensive Accessibility Tests', () => {
               </div>
             )}
           </div>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<ModalTest />)
+      renderWithMotion(<ModalTest />);
 
-      const openButton = screen.getByTestId('open-modal')
-      await userEvent.click(openButton)
+      const openButton = screen.getByTestId("open-modal");
+      await userEvent.click(openButton);
 
-      const modal = screen.getByTestId('modal')
-      const modalButtons = screen.getAllByText(/Modal Button/)
-      const closeButton = screen.getByTestId('close-modal')
+      const modal = screen.getByTestId("modal");
+      const modalButtons = screen.getAllByText(/Modal Button/);
+      const closeButton = screen.getByTestId("close-modal");
 
-      expect(modal).toBeInTheDocument()
+      expect(modal).toBeInTheDocument();
 
       // Focus should be trapped within modal
-      modalButtons[0].focus()
-      expect(modalButtons[0]).toHaveFocus()
+      modalButtons[0].focus();
+      expect(modalButtons[0]).toHaveFocus();
 
-      await userEvent.tab()
-      expect(modalButtons[1]).toHaveFocus()
+      await userEvent.tab();
+      expect(modalButtons[1]).toHaveFocus();
 
-      await userEvent.tab()
-      expect(closeButton).toHaveFocus()
-    })
-  })
+      await userEvent.tab();
+      expect(closeButton).toHaveFocus();
+    });
+  });
 
-  describe('Error State Accessibility', () => {
-    it('should handle animation errors accessibly', async () => {
+  describe("Error State Accessibility", () => {
+    it("should handle animation errors accessibly", async () => {
       const ErrorStateTest = () => {
-        const [hasError, setHasError] = React.useState(false)
-        
-        const ariaProps = getAriaProps('button', hasError ? 'error' : 'idle')
-        
+        const [hasError, setHasError] = React.useState(false);
+
+        const ariaProps = getAriaProps("button", hasError ? "error" : "idle");
+
         return (
           <div>
-            <button 
+            <button
               onClick={() => setHasError(true)}
               data-testid="trigger-error"
             >
               Trigger Error
             </button>
-            
-            <motion.div
-              {...ariaProps}
-              data-testid="error-prone-element"
-            >
-              {hasError ? 'Error occurred' : 'Normal state'}
+
+            <motion.div {...ariaProps} data-testid="error-prone-element">
+              {hasError ? "Error occurred" : "Normal state"}
             </motion.div>
           </div>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<ErrorStateTest />)
+      renderWithMotion(<ErrorStateTest />);
 
-      const triggerButton = screen.getByTestId('trigger-error')
-      const element = screen.getByTestId('error-prone-element')
+      const triggerButton = screen.getByTestId("trigger-error");
+      const element = screen.getByTestId("error-prone-element");
 
       // Initial state
-      expect(element).toHaveAttribute('aria-invalid', 'false')
+      expect(element).toHaveAttribute("aria-invalid", "false");
 
       // Trigger error
-      await userEvent.click(triggerButton)
+      await userEvent.click(triggerButton);
 
       // Error state should be announced
-      expect(element).toHaveAttribute('aria-invalid', 'true')
-      expect(element).toHaveAttribute('aria-live', 'assertive')
-    })
+      expect(element).toHaveAttribute("aria-invalid", "true");
+      expect(element).toHaveAttribute("aria-live", "assertive");
+    });
 
-    it('should provide fallback content for failed animations', async () => {
+    it("should provide fallback content for failed animations", async () => {
       const FallbackTest = () => {
-        const [animationFailed, setAnimationFailed] = React.useState(false)
-        
+        const [animationFailed, setAnimationFailed] = React.useState(false);
+
         return (
           <div>
-            <button 
+            <button
               onClick={() => setAnimationFailed(true)}
               data-testid="fail-animation"
             >
               Fail Animation
             </button>
-            
+
             {animationFailed ? (
-              <div data-testid="fallback-content">
-                Static fallback content
-              </div>
+              <div data-testid="fallback-content">Static fallback content</div>
             ) : (
               <AccessibleAnimatedButton>
                 Animated Content
               </AccessibleAnimatedButton>
             )}
           </div>
-        )
-      }
+        );
+      };
 
-      renderWithMotion(<FallbackTest />)
+      renderWithMotion(<FallbackTest />);
 
-      const failButton = screen.getByTestId('fail-animation')
-      
+      const failButton = screen.getByTestId("fail-animation");
+
       // Initially shows animated content
-      expect(screen.getByText('Animated Content')).toBeInTheDocument()
-      
+      expect(screen.getByText("Animated Content")).toBeInTheDocument();
+
       // Trigger failure
-      await userEvent.click(failButton)
-      
+      await userEvent.click(failButton);
+
       // Should show fallback
-      expect(screen.getByTestId('fallback-content')).toBeInTheDocument()
-      expect(screen.queryByText('Animated Content')).not.toBeInTheDocument()
-    })
-  })
-})
+      expect(screen.getByTestId("fallback-content")).toBeInTheDocument();
+      expect(screen.queryByText("Animated Content")).not.toBeInTheDocument();
+    });
+  });
+});

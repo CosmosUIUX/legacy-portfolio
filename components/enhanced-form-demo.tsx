@@ -1,32 +1,32 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import { motion, AnimatePresence } from "@/lib/motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { FormFeedback } from "@/components/form-feedback"
-import { FormProgress } from "@/components/form-progress"
-import { useFormFeedback, useFormProgress } from "@/lib/motion/form-feedback"
-import { validators, composeValidators } from "@/lib/motion/form-validation"
-import { fieldGroupVariants } from "@/lib/motion/form-animations"
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "@/lib/motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormFeedback } from "@/components/form-feedback";
+import { FormProgress } from "@/components/form-progress";
+import { useFormFeedback, useFormProgress } from "@/lib/motion/form-feedback";
+import { validators, composeValidators } from "@/lib/motion/form-validation";
+import { fieldGroupVariants } from "@/lib/motion/form-animations";
 
 interface FormData {
   // Step 1: Personal Info
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+
   // Step 2: Project Details
-  projectType: string
-  budget: string
-  timeline: string
-  
+  projectType: string;
+  budget: string;
+  timeline: string;
+
   // Step 3: Requirements
-  description: string
-  preferences: string
-  additionalNotes: string
+  description: string;
+  preferences: string;
+  additionalNotes: string;
 }
 
 const initialFormData: FormData = {
@@ -39,30 +39,30 @@ const initialFormData: FormData = {
   timeline: "",
   description: "",
   preferences: "",
-  additionalNotes: ""
-}
+  additionalNotes: "",
+};
 
 const formSteps = [
   { id: 1, title: "Personal Info", description: "Basic information" },
   { id: 2, title: "Project Details", description: "Project specifics" },
-  { id: 3, title: "Requirements", description: "Detailed requirements" }
-]
+  { id: 3, title: "Requirements", description: "Detailed requirements" },
+];
 
 export function EnhancedFormDemo() {
-  const [formData, setFormData] = useState<FormData>(initialFormData)
-  const [showMultiStep, setShowMultiStep] = useState(false)
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [showMultiStep, setShowMultiStep] = useState(false);
 
   // Form feedback management
   const formFeedback = useFormFeedback({
     onSubmissionSuccess: () => {
-      console.log("Form submitted successfully!")
+      console.log("Form submitted successfully!");
     },
     onSubmissionError: (error) => {
-      console.error("Form submission error:", error)
+      console.error("Form submission error:", error);
     },
     successDuration: 3000,
-    resetAfterSuccess: true
-  })
+    resetAfterSuccess: true,
+  });
 
   // Multi-step form progress
   const formProgress = useFormProgress({
@@ -71,70 +71,77 @@ export function EnhancedFormDemo() {
       // Validate current step before allowing navigation
       switch (step) {
         case 1:
-          return !!(formData.firstName && formData.lastName && formData.email)
+          return !!(formData.firstName && formData.lastName && formData.email);
         case 2:
-          return !!(formData.projectType && formData.budget)
+          return !!(formData.projectType && formData.budget);
         case 3:
-          return !!formData.description
+          return !!formData.description;
         default:
-          return true
+          return true;
       }
     },
     onStepChange: (step, progress) => {
-      console.log(`Step changed to ${step}, progress: ${progress}%`)
-    }
-  })
+      console.log(`Step changed to ${step}, progress: ${progress}%`);
+    },
+  });
 
-  const handleInputChange = (field: keyof FormData) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData(prev => ({ ...prev, [field]: e.target.value }))
-  }
+  const handleInputChange =
+    (field: keyof FormData) =>
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >,
+    ) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    };
 
   const simulateSubmission = async () => {
     // Simulate API call with random success/failure
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     if (Math.random() > 0.3) {
-      return { success: true, data: formData }
+      return { success: true, data: formData };
     } else {
-      throw new Error("Network error occurred")
+      throw new Error("Network error occurred");
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await formFeedback.submitForm(simulateSubmission)
-  }
+    e.preventDefault();
+    await formFeedback.submitForm(simulateSubmission);
+  };
 
   const handleStepSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (formProgress.isLastStep) {
-      await formFeedback.submitForm(simulateSubmission)
+      await formFeedback.submitForm(simulateSubmission);
     } else {
-      const success = await formProgress.nextStep()
+      const success = await formProgress.nextStep();
       if (!success) {
-        formProgress.markStepError(formProgress.currentStep, "Please fill in all required fields")
+        formProgress.markStepError(
+          formProgress.currentStep,
+          "Please fill in all required fields",
+        );
       }
     }
-  }
+  };
 
   // Validation functions
   const emailValidator = composeValidators(
     validators.required,
-    validators.email
-  )
+    validators.email,
+  );
 
   const nameValidator = composeValidators(
     validators.required,
-    validators.minLength(2)
-  )
+    validators.minLength(2),
+  );
 
   const descriptionValidator = composeValidators(
     validators.required,
-    validators.minLength(10)
-  )
+    validators.minLength(10),
+  );
 
   const renderStep = () => {
     switch (formProgress.currentStep) {
@@ -153,7 +160,7 @@ export function EnhancedFormDemo() {
               <Input
                 label="First Name"
                 value={formData.firstName}
-                onChange={handleInputChange('firstName')}
+                onChange={handleInputChange("firstName")}
                 validator={nameValidator}
                 showValidationIcon
                 floatingLabel
@@ -161,7 +168,7 @@ export function EnhancedFormDemo() {
               <Input
                 label="Last Name"
                 value={formData.lastName}
-                onChange={handleInputChange('lastName')}
+                onChange={handleInputChange("lastName")}
                 validator={nameValidator}
                 showValidationIcon
                 floatingLabel
@@ -171,7 +178,7 @@ export function EnhancedFormDemo() {
               label="Email Address"
               type="email"
               value={formData.email}
-              onChange={handleInputChange('email')}
+              onChange={handleInputChange("email")}
               validator={emailValidator}
               showValidationIcon
               floatingLabel
@@ -180,11 +187,11 @@ export function EnhancedFormDemo() {
               label="Phone Number"
               type="tel"
               value={formData.phone}
-              onChange={handleInputChange('phone')}
+              onChange={handleInputChange("phone")}
               floatingLabel
             />
           </motion.div>
-        )
+        );
 
       case 2:
         return (
@@ -199,10 +206,12 @@ export function EnhancedFormDemo() {
             <h3 className="text-lg font-semibold mb-4">Project Details</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Project Type</label>
+                <label className="block text-sm font-medium mb-2">
+                  Project Type
+                </label>
                 <select
                   value={formData.projectType}
-                  onChange={handleInputChange('projectType')}
+                  onChange={handleInputChange("projectType")}
                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary"
                 >
                   <option value="">Select project type</option>
@@ -212,12 +221,14 @@ export function EnhancedFormDemo() {
                   <option value="consultation">Consultation</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium mb-2">Budget Range</label>
+                <label className="block text-sm font-medium mb-2">
+                  Budget Range
+                </label>
                 <select
                   value={formData.budget}
-                  onChange={handleInputChange('budget')}
+                  onChange={handleInputChange("budget")}
                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary"
                 >
                   <option value="">Select budget range</option>
@@ -227,12 +238,14 @@ export function EnhancedFormDemo() {
                   <option value="250k-plus">$250,000+</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium mb-2">Timeline</label>
+                <label className="block text-sm font-medium mb-2">
+                  Timeline
+                </label>
                 <select
                   value={formData.timeline}
-                  onChange={handleInputChange('timeline')}
+                  onChange={handleInputChange("timeline")}
                   className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary"
                 >
                   <option value="">Select timeline</option>
@@ -245,7 +258,7 @@ export function EnhancedFormDemo() {
               </div>
             </div>
           </motion.div>
-        )
+        );
 
       case 3:
         return (
@@ -261,7 +274,7 @@ export function EnhancedFormDemo() {
             <Textarea
               label="Project Description"
               value={formData.description}
-              onChange={handleInputChange('description')}
+              onChange={handleInputChange("description")}
               validator={descriptionValidator}
               rows={4}
               placeholder="Describe your project in detail..."
@@ -269,24 +282,24 @@ export function EnhancedFormDemo() {
             <Textarea
               label="Style Preferences"
               value={formData.preferences}
-              onChange={handleInputChange('preferences')}
+              onChange={handleInputChange("preferences")}
               rows={3}
               placeholder="What styles do you prefer? Any specific requirements?"
             />
             <Textarea
               label="Additional Notes"
               value={formData.additionalNotes}
-              onChange={handleInputChange('additionalNotes')}
+              onChange={handleInputChange("additionalNotes")}
               rows={3}
               placeholder="Any additional information you'd like to share..."
             />
           </motion.div>
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
@@ -295,7 +308,7 @@ export function EnhancedFormDemo() {
         <p className="text-muted-foreground mb-6">
           Showcasing Motion.dev form interactions with feedback animations
         </p>
-        
+
         <div className="flex justify-center space-x-4 mb-8">
           <Button
             variant={!showMultiStep ? "default" : "outline"}
@@ -322,13 +335,13 @@ export function EnhancedFormDemo() {
             className="bg-white p-8 rounded-lg border shadow-sm"
           >
             <h2 className="text-xl font-semibold mb-6">Contact Form</h2>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
                   label="First Name"
                   value={formData.firstName}
-                  onChange={handleInputChange('firstName')}
+                  onChange={handleInputChange("firstName")}
                   validator={nameValidator}
                   showValidationIcon
                   floatingLabel
@@ -336,27 +349,27 @@ export function EnhancedFormDemo() {
                 <Input
                   label="Last Name"
                   value={formData.lastName}
-                  onChange={handleInputChange('lastName')}
+                  onChange={handleInputChange("lastName")}
                   validator={nameValidator}
                   showValidationIcon
                   floatingLabel
                 />
               </div>
-              
+
               <Input
                 label="Email Address"
                 type="email"
                 value={formData.email}
-                onChange={handleInputChange('email')}
+                onChange={handleInputChange("email")}
                 validator={emailValidator}
                 showValidationIcon
                 floatingLabel
               />
-              
+
               <Textarea
                 label="Message"
                 value={formData.description}
-                onChange={handleInputChange('description')}
+                onChange={handleInputChange("description")}
                 validator={descriptionValidator}
                 rows={4}
                 placeholder="Tell us about your project..."
@@ -402,9 +415,7 @@ export function EnhancedFormDemo() {
             />
 
             <form onSubmit={handleStepSubmit} className="space-y-6">
-              <AnimatePresence mode="wait">
-                {renderStep()}
-              </AnimatePresence>
+              <AnimatePresence mode="wait">{renderStep()}</AnimatePresence>
 
               <FormFeedback
                 state={formFeedback.submissionState}
@@ -421,14 +432,16 @@ export function EnhancedFormDemo() {
                 >
                   Previous
                 </Button>
-                
+
                 <Button
                   type="submit"
                   loading={formFeedback.isSubmitting}
                   success={formFeedback.isSuccess}
                   error={formFeedback.isError}
                   loadingText="Processing..."
-                  successText={formProgress.isLastStep ? "Submitted!" : "Next Step"}
+                  successText={
+                    formProgress.isLastStep ? "Submitted!" : "Next Step"
+                  }
                   errorText="Error"
                 >
                   {formProgress.isLastStep ? "Submit" : "Next Step"}
@@ -439,5 +452,5 @@ export function EnhancedFormDemo() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

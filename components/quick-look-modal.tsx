@@ -1,32 +1,40 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "@/lib/motion"
-import Image from "next/image"
-import { X, ChevronLeft, ChevronRight, Plus } from "lucide-react"
-import { BlurPanel } from "./blur-panel"
+import { useState } from "react";
+import { motion, AnimatePresence } from "@/lib/motion";
+import Image from "next/image";
+import { X, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { BlurPanel } from "./blur-panel";
 
-import type { Product } from "@/types/product"
+import type { Product } from "@/types/product";
 
 interface QuickLookModalProps {
-  product: Product | null
-  isOpen: boolean
-  onClose: () => void
+  product: Product | null;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [selectedSwatch, setSelectedSwatch] = useState(0)
+export function QuickLookModal({
+  product,
+  isOpen,
+  onClose,
+}: QuickLookModalProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedSwatch, setSelectedSwatch] = useState(0);
 
-  if (!product) return null
+  if (!product) return null;
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % product.quickLookImages.length)
-  }
+    setCurrentImageIndex((prev) => (prev + 1) % product.quickLookImages.length);
+  };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + product.quickLookImages.length) % product.quickLookImages.length)
-  }
+    setCurrentImageIndex(
+      (prev) =>
+        (prev - 1 + product.quickLookImages.length) %
+        product.quickLookImages.length,
+    );
+  };
 
   return (
     <AnimatePresence>
@@ -39,7 +47,10 @@ export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps
           transition={{ duration: 0.2 }}
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+          />
 
           {/* Modal */}
           <motion.div
@@ -55,7 +66,10 @@ export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps
                 <div className="relative">
                   <div className="relative aspect-square rounded-lg overflow-hidden mb-4">
                     <Image
-                      src={product.quickLookImages[currentImageIndex] || "/placeholder.svg"}
+                      src={
+                        product.quickLookImages[currentImageIndex] ||
+                        "/placeholder.svg"
+                      }
                       alt={`${product.name} - Image ${currentImageIndex + 1}`}
                       fill
                       className="object-cover"
@@ -83,23 +97,27 @@ export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps
 
                   {/* Image Thumbnails */}
                   <div className="flex gap-2">
-                    {product.quickLookImages.map((image: string, index: number) => (
-                      <button
-                        key={index}
-                        className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                          currentImageIndex === index ? "border-neutral-900" : "border-neutral-200"
-                        }`}
-                        onClick={() => setCurrentImageIndex(index)}
-                      >
-                        <Image
-                          src={image || "/placeholder.svg"}
-                          alt={`${product.name} thumbnail ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          sizes="64px"
-                        />
-                      </button>
-                    ))}
+                    {product.quickLookImages.map(
+                      (image: string, index: number) => (
+                        <button
+                          key={index}
+                          className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                            currentImageIndex === index
+                              ? "border-neutral-900"
+                              : "border-neutral-200"
+                          }`}
+                          onClick={() => setCurrentImageIndex(index)}
+                        >
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`${product.name} thumbnail ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="64px"
+                          />
+                        </button>
+                      ),
+                    )}
                   </div>
                 </div>
 
@@ -107,8 +125,12 @@ export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps
                 <div className="flex flex-col">
                   <div className="flex items-start justify-between mb-6">
                     <div>
-                      <h2 className="text-3xl font-bold text-neutral-900 mb-2">{product.name}</h2>
-                      <p className="text-lg text-neutral-600">{product.materials.join(", ")}</p>
+                      <h2 className="text-3xl font-bold text-neutral-900 mb-2">
+                        {product.name}
+                      </h2>
+                      <p className="text-lg text-neutral-600">
+                        {product.materials.join(", ")}
+                      </p>
                     </div>
                     <button
                       className="p-2 hover:bg-neutral-100 rounded-full transition-colors duration-200"
@@ -120,23 +142,31 @@ export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps
 
                   <div className="space-y-6 flex-1">
                     {/* Price */}
-                    <div className="text-2xl font-bold text-neutral-900">{product.price}</div>
+                    <div className="text-2xl font-bold text-neutral-900">
+                      {product.price}
+                    </div>
 
                     {/* Dimensions */}
                     <div>
-                      <h4 className="text-sm font-medium text-neutral-900 mb-2">DIMENSIONS</h4>
+                      <h4 className="text-sm font-medium text-neutral-900 mb-2">
+                        DIMENSIONS
+                      </h4>
                       <p className="text-neutral-600">{product.dimensions}</p>
                     </div>
 
                     {/* Material Swatches */}
                     <div>
-                      <h4 className="text-sm font-medium text-neutral-900 mb-3">FINISH</h4>
+                      <h4 className="text-sm font-medium text-neutral-900 mb-3">
+                        FINISH
+                      </h4>
                       <div className="flex gap-3">
                         {product.swatches.map((swatch, index: number) => (
                           <button
                             key={index}
                             className={`w-8 h-8 rounded-full border-2 transition-all duration-200 relative group ${
-                              selectedSwatch === index ? "border-neutral-900 scale-110" : "border-neutral-300"
+                              selectedSwatch === index
+                                ? "border-neutral-900 scale-110"
+                                : "border-neutral-300"
                             }`}
                             style={{ backgroundColor: swatch.color }}
                             onClick={() => setSelectedSwatch(index)}
@@ -151,7 +181,9 @@ export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps
 
                     {/* Features */}
                     <div>
-                      <h4 className="text-sm font-medium text-neutral-900 mb-3">FEATURES</h4>
+                      <h4 className="text-sm font-medium text-neutral-900 mb-3">
+                        FEATURES
+                      </h4>
                       <ul className="space-y-2 text-sm text-neutral-600">
                         <li>• Sustainably sourced materials</li>
                         <li>• Hand-finished edges</li>
@@ -177,5 +209,5 @@ export function QuickLookModal({ product, isOpen, onClose }: QuickLookModalProps
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

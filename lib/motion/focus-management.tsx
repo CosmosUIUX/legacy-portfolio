@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import React, { useEffect, useRef, useCallback } from 'react'
-import { useKeyboardNavigation, useAriaAnnouncements } from './accessibility'
+import React, { useEffect, useRef, useCallback } from "react";
+import { useKeyboardNavigation, useAriaAnnouncements } from "./accessibility";
 
 interface FocusManagerProps {
-  children: React.ReactNode
-  restoreFocus?: boolean
-  trapFocus?: boolean
-  autoFocus?: boolean
-  onEscape?: () => void
-  className?: string
+  children: React.ReactNode;
+  restoreFocus?: boolean;
+  trapFocus?: boolean;
+  autoFocus?: boolean;
+  onEscape?: () => void;
+  className?: string;
 }
 
 /**
@@ -21,51 +21,55 @@ export function FocusManager({
   trapFocus = false,
   autoFocus = false,
   onEscape,
-  className = ''
+  className = "",
 }: FocusManagerProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const previousFocusRef = useRef<HTMLElement | null>(null)
-  const { trapFocus: trapFocusUtil, releaseFocusTrap, getFocusableElements } = useKeyboardNavigation()
-  const { announce } = useAriaAnnouncements()
+  const containerRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const {
+    trapFocus: trapFocusUtil,
+    releaseFocusTrap,
+    getFocusableElements,
+  } = useKeyboardNavigation();
+  const { announce } = useAriaAnnouncements();
 
   // Store previous focus when component mounts
   useEffect(() => {
     if (restoreFocus) {
-      previousFocusRef.current = document.activeElement as HTMLElement
+      previousFocusRef.current = document.activeElement as HTMLElement;
     }
-  }, [restoreFocus])
+  }, [restoreFocus]);
 
   // Handle focus trapping
   useEffect(() => {
     if (trapFocus && containerRef.current) {
-      const cleanup = trapFocusUtil(containerRef.current)
-      
+      const cleanup = trapFocusUtil(containerRef.current);
+
       if (autoFocus) {
-        const focusableElements = getFocusableElements(containerRef.current)
+        const focusableElements = getFocusableElements(containerRef.current);
         if (focusableElements.length > 0) {
-          focusableElements[0].focus()
-          announce('Focus moved to interactive content')
+          focusableElements[0].focus();
+          announce("Focus moved to interactive content");
         }
       }
 
-      return cleanup
+      return cleanup;
     }
-  }, [trapFocus, autoFocus, trapFocusUtil, getFocusableElements, announce])
+  }, [trapFocus, autoFocus, trapFocusUtil, getFocusableElements, announce]);
 
   // Handle escape key
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && onEscape) {
-        event.preventDefault()
-        onEscape()
+      if (event.key === "Escape" && onEscape) {
+        event.preventDefault();
+        onEscape();
       }
-    }
+    };
 
     if (trapFocus) {
-      document.addEventListener('keydown', handleKeyDown)
-      return () => document.removeEventListener('keydown', handleKeyDown)
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
     }
-  }, [trapFocus, onEscape])
+  }, [trapFocus, onEscape]);
 
   // Restore focus on unmount
   useEffect(() => {
@@ -73,169 +77,187 @@ export function FocusManager({
       if (restoreFocus && previousFocusRef.current) {
         // Small delay to ensure DOM is ready
         setTimeout(() => {
-          if (previousFocusRef.current && document.contains(previousFocusRef.current)) {
-            previousFocusRef.current.focus()
-            announce('Focus restored to previous element')
+          if (
+            previousFocusRef.current &&
+            document.contains(previousFocusRef.current)
+          ) {
+            previousFocusRef.current.focus();
+            announce("Focus restored to previous element");
           }
-        }, 10)
+        }, 10);
       }
-      
+
       if (trapFocus) {
-        releaseFocusTrap()
+        releaseFocusTrap();
       }
-    }
-  }, [restoreFocus, trapFocus, releaseFocusTrap, announce])
+    };
+  }, [restoreFocus, trapFocus, releaseFocusTrap, announce]);
 
   return (
     <div
       ref={containerRef}
       className={`focus-manager ${className}`}
-      role={trapFocus ? 'dialog' : undefined}
-      aria-modal={trapFocus ? 'true' : undefined}
+      role={trapFocus ? "dialog" : undefined}
+      aria-modal={trapFocus ? "true" : undefined}
     >
       {children}
     </div>
-  )
+  );
 }
 
 /**
  * Hook for managing focus during animations
  */
 export function useAnimationFocus() {
-  const focusBeforeAnimationRef = useRef<HTMLElement | null>(null)
-  const { announce } = useAriaAnnouncements()
+  const focusBeforeAnimationRef = useRef<HTMLElement | null>(null);
+  const { announce } = useAriaAnnouncements();
 
   const preserveFocusForAnimation = useCallback(() => {
-    focusBeforeAnimationRef.current = document.activeElement as HTMLElement
-  }, [])
+    focusBeforeAnimationRef.current = document.activeElement as HTMLElement;
+  }, []);
 
   const restoreFocusAfterAnimation = useCallback(() => {
-    if (focusBeforeAnimationRef.current && document.contains(focusBeforeAnimationRef.current)) {
-      focusBeforeAnimationRef.current.focus()
-      announce('Animation complete, focus restored')
+    if (
+      focusBeforeAnimationRef.current &&
+      document.contains(focusBeforeAnimationRef.current)
+    ) {
+      focusBeforeAnimationRef.current.focus();
+      announce("Animation complete, focus restored");
     }
-  }, [announce])
+  }, [announce]);
 
-  const announceFocusChange = useCallback((message: string) => {
-    announce(message)
-  }, [announce])
+  const announceFocusChange = useCallback(
+    (message: string) => {
+      announce(message);
+    },
+    [announce],
+  );
 
   return {
     preserveFocusForAnimation,
     restoreFocusAfterAnimation,
-    announceFocusChange
-  }
+    announceFocusChange,
+  };
 }
 
 /**
  * Component for managing focus during route transitions
  */
-export function RouteTransitionFocus({ 
-  children, 
-  announcePageChange = true 
-}: { 
-  children: React.ReactNode
-  announcePageChange?: boolean 
+export function RouteTransitionFocus({
+  children,
+  announcePageChange = true,
+}: {
+  children: React.ReactNode;
+  announcePageChange?: boolean;
 }) {
-  const { announce } = useAriaAnnouncements()
-  const previousPathRef = useRef<string>('')
+  const { announce } = useAriaAnnouncements();
+  const previousPathRef = useRef<string>("");
 
   useEffect(() => {
-    const currentPath = window.location.pathname
-    
-    if (announcePageChange && previousPathRef.current && previousPathRef.current !== currentPath) {
+    const currentPath = window.location.pathname;
+
+    if (
+      announcePageChange &&
+      previousPathRef.current &&
+      previousPathRef.current !== currentPath
+    ) {
       // Announce page change
-      const pageTitle = document.title || 'New page'
-      announce(`Navigated to ${pageTitle}`)
-      
+      const pageTitle = document.title || "New page";
+      announce(`Navigated to ${pageTitle}`);
+
       // Focus main content area
-      const mainContent = document.querySelector('main, [role="main"], #main-content')
+      const mainContent = document.querySelector(
+        'main, [role="main"], #main-content',
+      );
       if (mainContent) {
-        (mainContent as HTMLElement).focus()
+        (mainContent as HTMLElement).focus();
       }
     }
-    
-    previousPathRef.current = currentPath
-  }, [announcePageChange, announce])
 
-  return <>{children}</>
+    previousPathRef.current = currentPath;
+  }, [announcePageChange, announce]);
+
+  return <>{children}</>;
 }
 
 /**
  * Hook for creating accessible focus indicators
  */
 export function useFocusIndicator() {
-  const [isFocused, setIsFocused] = React.useState(false)
-  const [isKeyboardFocus, setIsKeyboardFocus] = React.useState(false)
-  const { isKeyboardUser } = useKeyboardNavigation()
+  const [isFocused, setIsFocused] = React.useState(false);
+  const [isKeyboardFocus, setIsKeyboardFocus] = React.useState(false);
+  const { isKeyboardUser } = useKeyboardNavigation();
 
   const focusProps = {
     onFocus: (event: React.FocusEvent) => {
-      setIsFocused(true)
-      setIsKeyboardFocus(isKeyboardUser)
+      setIsFocused(true);
+      setIsKeyboardFocus(isKeyboardUser);
     },
     onBlur: () => {
-      setIsFocused(false)
-      setIsKeyboardFocus(false)
+      setIsFocused(false);
+      setIsKeyboardFocus(false);
     },
-    className: `${isFocused ? 'focused' : ''} ${isKeyboardFocus ? 'keyboard-focused' : ''}`.trim()
-  }
+    className:
+      `${isFocused ? "focused" : ""} ${isKeyboardFocus ? "keyboard-focused" : ""}`.trim(),
+  };
 
   return {
     isFocused,
     isKeyboardFocus,
-    focusProps
-  }
+    focusProps,
+  };
 }
 
 /**
  * Component for creating accessible focus boundaries
  */
-export function FocusBoundary({ 
-  children, 
+export function FocusBoundary({
+  children,
   label,
   onEnter,
-  onExit 
+  onExit,
 }: {
-  children: React.ReactNode
-  label?: string
-  onEnter?: () => void
-  onExit?: () => void
+  children: React.ReactNode;
+  label?: string;
+  onEnter?: () => void;
+  onExit?: () => void;
 }) {
-  const boundaryRef = useRef<HTMLDivElement>(null)
-  const { announce } = useAriaAnnouncements()
+  const boundaryRef = useRef<HTMLDivElement>(null);
+  const { announce } = useAriaAnnouncements();
 
   useEffect(() => {
-    const boundary = boundaryRef.current
-    if (!boundary) return
+    const boundary = boundaryRef.current;
+    if (!boundary) return;
 
     const handleFocusIn = (event: FocusEvent) => {
       if (boundary.contains(event.target as Node)) {
-        onEnter?.()
+        onEnter?.();
         if (label) {
-          announce(`Entered ${label}`)
+          announce(`Entered ${label}`);
         }
       }
-    }
+    };
 
     const handleFocusOut = (event: FocusEvent) => {
-      if (boundary.contains(event.target as Node) && 
-          !boundary.contains(event.relatedTarget as Node)) {
-        onExit?.()
+      if (
+        boundary.contains(event.target as Node) &&
+        !boundary.contains(event.relatedTarget as Node)
+      ) {
+        onExit?.();
         if (label) {
-          announce(`Exited ${label}`)
+          announce(`Exited ${label}`);
         }
       }
-    }
+    };
 
-    document.addEventListener('focusin', handleFocusIn)
-    document.addEventListener('focusout', handleFocusOut)
+    document.addEventListener("focusin", handleFocusIn);
+    document.addEventListener("focusout", handleFocusOut);
 
     return () => {
-      document.removeEventListener('focusin', handleFocusIn)
-      document.removeEventListener('focusout', handleFocusOut)
-    }
-  }, [label, onEnter, onExit, announce])
+      document.removeEventListener("focusin", handleFocusIn);
+      document.removeEventListener("focusout", handleFocusOut);
+    };
+  }, [label, onEnter, onExit, announce]);
 
   return (
     <div
@@ -246,5 +268,5 @@ export function FocusBoundary({
     >
       {children}
     </div>
-  )
+  );
 }

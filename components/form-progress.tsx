@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import React from "react"
-import { motion } from "@/lib/motion"
-import { Check, AlertCircle } from "lucide-react"
-import { stepIndicatorVariants } from "@/lib/motion/form-animations"
+import React from "react";
+import { motion } from "@/lib/motion";
+import { Check, AlertCircle } from "lucide-react";
+import { stepIndicatorVariants } from "@/lib/motion/form-animations";
 
 export interface FormStep {
-  id: number
-  title: string
-  description?: string
+  id: number;
+  title: string;
+  description?: string;
 }
 
 export interface FormProgressProps {
-  steps: FormStep[]
-  currentStep: number
-  completedSteps: Set<number>
-  stepErrors: Map<number, string>
-  progress: number
-  onStepClick?: (step: number) => void
-  allowStepNavigation?: boolean
-  className?: string
+  steps: FormStep[];
+  currentStep: number;
+  completedSteps: Set<number>;
+  stepErrors: Map<number, string>;
+  progress: number;
+  onStepClick?: (step: number) => void;
+  allowStepNavigation?: boolean;
+  className?: string;
 }
 
 export function FormProgress({
@@ -30,33 +30,33 @@ export function FormProgress({
   progress,
   onStepClick,
   allowStepNavigation = false,
-  className = ""
+  className = "",
 }: FormProgressProps) {
   const getStepState = (stepId: number) => {
-    if (stepErrors.has(stepId)) return 'error'
-    if (completedSteps.has(stepId)) return 'completed'
-    if (stepId === currentStep) return 'active'
-    return 'inactive'
-  }
+    if (stepErrors.has(stepId)) return "error";
+    if (completedSteps.has(stepId)) return "completed";
+    if (stepId === currentStep) return "active";
+    return "inactive";
+  };
 
   const getStepStyles = (state: string) => {
     switch (state) {
-      case 'active':
-        return "bg-primary text-primary-foreground border-primary"
-      case 'completed':
-        return "bg-green-500 text-white border-green-500"
-      case 'error':
-        return "bg-red-500 text-white border-red-500"
+      case "active":
+        return "bg-primary text-primary-foreground border-primary";
+      case "completed":
+        return "bg-green-500 text-white border-green-500";
+      case "error":
+        return "bg-red-500 text-white border-red-500";
       default:
-        return "bg-muted text-muted-foreground border-border"
+        return "bg-muted text-muted-foreground border-border";
     }
-  }
+  };
 
   const handleStepClick = (stepId: number) => {
     if (allowStepNavigation && onStepClick) {
-      onStepClick(stepId)
+      onStepClick(stepId);
     }
-  }
+  };
 
   return (
     <div className={`w-full ${className}`}>
@@ -75,12 +75,12 @@ export function FormProgress({
       {/* Step Indicators */}
       <div className="flex justify-between items-start">
         {steps.map((step, index) => {
-          const state = getStepState(step.id)
-          const isClickable = allowStepNavigation && (
-            completedSteps.has(step.id) || 
-            step.id === currentStep ||
-            step.id < currentStep
-          )
+          const state = getStepState(step.id);
+          const isClickable =
+            allowStepNavigation &&
+            (completedSteps.has(step.id) ||
+              step.id === currentStep ||
+              step.id < currentStep);
 
           return (
             <div key={step.id} className="flex flex-col items-center flex-1">
@@ -90,7 +90,7 @@ export function FormProgress({
                   w-10 h-10 rounded-full border-2 flex items-center justify-center
                   text-sm font-medium transition-colors relative z-10
                   ${getStepStyles(state)}
-                  ${isClickable ? 'cursor-pointer hover:scale-105' : 'cursor-default'}
+                  ${isClickable ? "cursor-pointer hover:scale-105" : "cursor-default"}
                 `}
                 variants={stepIndicatorVariants}
                 animate={state}
@@ -99,7 +99,7 @@ export function FormProgress({
                 whileHover={isClickable ? { scale: 1.05 } : undefined}
                 whileTap={isClickable ? { scale: 0.95 } : undefined}
               >
-                {state === 'completed' ? (
+                {state === "completed" ? (
                   <motion.div
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
@@ -107,7 +107,7 @@ export function FormProgress({
                   >
                     <Check size={16} />
                   </motion.div>
-                ) : state === 'error' ? (
+                ) : state === "error" ? (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -131,27 +131,36 @@ export function FormProgress({
                 <motion.h4
                   className={`
                     text-xs font-medium
-                    ${state === 'active' ? 'text-primary' : 
-                      state === 'completed' ? 'text-green-600' :
-                      state === 'error' ? 'text-red-600' :
-                      'text-muted-foreground'}
+                    ${
+                      state === "active"
+                        ? "text-primary"
+                        : state === "completed"
+                          ? "text-green-600"
+                          : state === "error"
+                            ? "text-red-600"
+                            : "text-muted-foreground"
+                    }
                   `}
                   animate={{
-                    color: state === 'active' ? 'hsl(var(--primary))' :
-                           state === 'completed' ? 'rgb(34, 197, 94)' :
-                           state === 'error' ? 'rgb(239, 68, 68)' :
-                           'hsl(var(--muted-foreground))'
+                    color:
+                      state === "active"
+                        ? "hsl(var(--primary))"
+                        : state === "completed"
+                          ? "rgb(34, 197, 94)"
+                          : state === "error"
+                            ? "rgb(239, 68, 68)"
+                            : "hsl(var(--muted-foreground))",
                   }}
                   transition={{ duration: 0.3 }}
                 >
                   {step.title}
                 </motion.h4>
-                
+
                 {step.description && (
                   <motion.p
                     className="text-xs text-muted-foreground mt-1"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: state === 'active' ? 1 : 0.7 }}
+                    animate={{ opacity: state === "active" ? 1 : 0.7 }}
                     transition={{ duration: 0.3 }}
                   >
                     {step.description}
@@ -178,16 +187,16 @@ export function FormProgress({
                     className="h-full bg-primary"
                     initial={{ width: "0%" }}
                     animate={{
-                      width: completedSteps.has(step.id) ? "100%" : "0%"
+                      width: completedSteps.has(step.id) ? "100%" : "0%",
                     }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
                   />
                 </div>
               )}
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

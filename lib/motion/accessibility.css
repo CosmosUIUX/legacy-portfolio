@@ -28,7 +28,9 @@
   outline: 2px solid #007acc;
   outline-offset: 2px;
   box-shadow: 0 0 0 4px rgba(0, 122, 204, 0.2);
-  transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    outline-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 /* Enhanced focus styles for different element types */
@@ -101,8 +103,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Respect reduced motion for loading spinner */
@@ -262,7 +268,7 @@
     outline: 2px solid ButtonText;
     outline-offset: 2px;
   }
-  
+
   .animation-error {
     border-color: Mark;
     background-color: transparent;
@@ -343,7 +349,10 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #f9f9f9;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .motion-preference-settings fieldset {
@@ -424,8 +433,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Respect reduced motion for indicators */
@@ -535,17 +549,17 @@
     font-size: 12px;
     padding: 6px;
   }
-  
+
   .skip-navigation a {
     padding: 3px 6px;
     font-size: 12px;
   }
-  
+
   .motion-preference-settings {
     padding: 12px;
     font-size: 14px;
   }
-  
+
   .accessibility-compliance-indicator {
     bottom: 10px;
     right: 10px;
@@ -561,11 +575,11 @@
     border-color: #374151;
     color: #f9fafb;
   }
-  
+
   .motion-preference-settings .preference-description {
     color: #9ca3af;
   }
-  
+
   .motion-preference-settings .current-status {
     border-top-color: #374151;
   }

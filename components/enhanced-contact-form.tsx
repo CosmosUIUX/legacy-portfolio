@@ -1,22 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "@/lib/motion"
-import { Check, Mail, Phone, User, MessageSquare, Calendar, AlertCircle } from "lucide-react"
-import { Reveal } from "./reveal"
+import { useState } from "react";
+import { motion, AnimatePresence } from "@/lib/motion";
+import {
+  Check,
+  Mail,
+  Phone,
+  User,
+  MessageSquare,
+  Calendar,
+  AlertCircle,
+} from "lucide-react";
+import { Reveal } from "./reveal";
 
 interface FormData {
-  name: string
-  email: string
-  phone: string
-  service: string
-  budget: string
-  timeline: string
-  message: string
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  budget: string;
+  timeline: string;
+  message: string;
 }
 
 interface FormErrors {
-  [key: string]: string
+  [key: string]: string;
 }
 
 export function EnhancedContactForm() {
@@ -27,65 +35,69 @@ export function EnhancedContactForm() {
     service: "",
     budget: "",
     timeline: "",
-    message: ""
-  })
+    message: "",
+  });
 
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
+    const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required"
+      newErrors.name = "Name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required"
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address"
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.service) {
-      newErrors.service = "Please select a service"
+      newErrors.service = "Please select a service";
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = "Message is required"
+      newErrors.message = "Message is required";
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = "Message must be at least 10 characters long"
+      newErrors.message = "Message must be at least 10 characters long";
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!validateForm()) {
-      return
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-  }
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+  };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }))
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-  }
+  };
 
   const services = [
     { value: "", label: "Select a service" },
@@ -94,8 +106,8 @@ export function EnhancedContactForm() {
     { value: "renovation", label: "Renovation" },
     { value: "consultation", label: "Design Consultation" },
     { value: "project-management", label: "Project Management" },
-    { value: "other", label: "Other" }
-  ]
+    { value: "other", label: "Other" },
+  ];
 
   const budgetRanges = [
     { value: "", label: "Select budget range" },
@@ -104,8 +116,8 @@ export function EnhancedContactForm() {
     { value: "100k-250k", label: "$100,000 - $250,000" },
     { value: "250k-500k", label: "$250,000 - $500,000" },
     { value: "500k-plus", label: "$500,000+" },
-    { value: "discuss", label: "Let's discuss" }
-  ]
+    { value: "discuss", label: "Let's discuss" },
+  ];
 
   const timelines = [
     { value: "", label: "Select timeline" },
@@ -114,8 +126,8 @@ export function EnhancedContactForm() {
     { value: "3-6-months", label: "3-6 months" },
     { value: "6-12-months", label: "6-12 months" },
     { value: "12-plus-months", label: "12+ months" },
-    { value: "flexible", label: "Flexible" }
-  ]
+    { value: "flexible", label: "Flexible" },
+  ];
 
   if (isSubmitted) {
     return (
@@ -134,30 +146,36 @@ export function EnhancedContactForm() {
           >
             <Check size={32} className="text-green-600" />
           </motion.div>
-          <h3 className="text-2xl font-bold text-neutral-900 mb-4">Thank You!</h3>
+          <h3 className="text-2xl font-bold text-neutral-900 mb-4">
+            Thank You!
+          </h3>
           <p className="text-neutral-600 mb-6 leading-relaxed">
-            We&apos;ve received your message and will get back to you within 24 hours. 
-            Our team is excited to discuss your project with you.
+            We&apos;ve received your message and will get back to you within 24
+            hours. Our team is excited to discuss your project with you.
           </p>
           <div className="bg-neutral-50 p-4 rounded-lg">
             <p className="text-sm text-neutral-600">
-              <strong>What&apos;s next?</strong><br />
-              We&apos;ll review your project details and schedule a consultation call to discuss your vision, timeline, and budget.
+              <strong>What&apos;s next?</strong>
+              <br />
+              We&apos;ll review your project details and schedule a consultation
+              call to discuss your vision, timeline, and budget.
             </p>
           </div>
         </div>
       </motion.div>
-    )
+    );
   }
 
   return (
     <Reveal>
       <div className="bg-white p-8 lg:p-12 rounded-2xl shadow-sm border border-neutral-100">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-neutral-900 mb-4">Start Your Project</h2>
+          <h2 className="text-3xl font-bold text-neutral-900 mb-4">
+            Start Your Project
+          </h2>
           <p className="text-neutral-600 leading-relaxed">
-            Tell us about your vision and we&apos;ll help bring it to life. The more details you provide, 
-            the better we can understand your needs.
+            Tell us about your vision and we&apos;ll help bring it to life. The
+            more details you provide, the better we can understand your needs.
           </p>
         </div>
 
@@ -165,7 +183,10 @@ export function EnhancedContactForm() {
           {/* Personal Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 <User size={16} className="inline mr-2" />
                 Full Name *
               </label>
@@ -176,7 +197,9 @@ export function EnhancedContactForm() {
                 value={formData.name}
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-all duration-200 ${
-                  errors.name ? "border-red-300 focus:ring-red-500" : "border-neutral-200"
+                  errors.name
+                    ? "border-red-300 focus:ring-red-500"
+                    : "border-neutral-200"
                 }`}
                 placeholder="Enter your full name"
               />
@@ -196,7 +219,10 @@ export function EnhancedContactForm() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 <Mail size={16} className="inline mr-2" />
                 Email Address *
               </label>
@@ -207,7 +233,9 @@ export function EnhancedContactForm() {
                 value={formData.email}
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-all duration-200 ${
-                  errors.email ? "border-red-300 focus:ring-red-500" : "border-neutral-200"
+                  errors.email
+                    ? "border-red-300 focus:ring-red-500"
+                    : "border-neutral-200"
                 }`}
                 placeholder="Enter your email address"
               />
@@ -229,7 +257,10 @@ export function EnhancedContactForm() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 <Phone size={16} className="inline mr-2" />
                 Phone Number
               </label>
@@ -245,7 +276,10 @@ export function EnhancedContactForm() {
             </div>
 
             <div>
-              <label htmlFor="service" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="service"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 Service Interest *
               </label>
               <select
@@ -254,7 +288,9 @@ export function EnhancedContactForm() {
                 value={formData.service}
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-all duration-200 ${
-                  errors.service ? "border-red-300 focus:ring-red-500" : "border-neutral-200"
+                  errors.service
+                    ? "border-red-300 focus:ring-red-500"
+                    : "border-neutral-200"
                 }`}
               >
                 {services.map((service) => (
@@ -282,7 +318,10 @@ export function EnhancedContactForm() {
           {/* Project Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="budget" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="budget"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 Budget Range
               </label>
               <select
@@ -301,7 +340,10 @@ export function EnhancedContactForm() {
             </div>
 
             <div>
-              <label htmlFor="timeline" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="timeline"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 <Calendar size={16} className="inline mr-2" />
                 Timeline
               </label>
@@ -323,7 +365,10 @@ export function EnhancedContactForm() {
 
           {/* Message */}
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-neutral-700 mb-2">
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-neutral-700 mb-2"
+            >
               <MessageSquare size={16} className="inline mr-2" />
               Project Details *
             </label>
@@ -334,7 +379,9 @@ export function EnhancedContactForm() {
               onChange={handleChange}
               rows={6}
               className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent resize-none transition-all duration-200 ${
-                errors.message ? "border-red-300 focus:ring-red-500" : "border-neutral-200"
+                errors.message
+                  ? "border-red-300 focus:ring-red-500"
+                  : "border-neutral-200"
               }`}
               placeholder="Tell us about your project vision, specific requirements, style preferences, and any other details that would help us understand your needs..."
             />
@@ -373,11 +420,17 @@ export function EnhancedContactForm() {
 
           <p className="text-xs text-neutral-500 text-center">
             By submitting this form, you agree to our{" "}
-            <a href="#" className="underline hover:text-neutral-700 transition-colors">
+            <a
+              href="#"
+              className="underline hover:text-neutral-700 transition-colors"
+            >
               Privacy Policy
             </a>{" "}
             and{" "}
-            <a href="#" className="underline hover:text-neutral-700 transition-colors">
+            <a
+              href="#"
+              className="underline hover:text-neutral-700 transition-colors"
+            >
               Terms of Service
             </a>
             .
@@ -385,5 +438,5 @@ export function EnhancedContactForm() {
         </form>
       </div>
     </Reveal>
-  )
+  );
 }
