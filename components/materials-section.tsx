@@ -108,7 +108,7 @@ export function MaterialsSection() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="font-bold mb-6 text-7xl whitespace-nowrap"
+                  className="font-bold mb-6 text-4xl md:text-7xl whitespace-nowrap"
                 >
                   <AnimatedText text={activeMaterialData.name} delay={0.2} />
                 </motion.h2>
