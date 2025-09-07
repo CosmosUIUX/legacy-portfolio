@@ -583,13 +583,13 @@ export const BundleOptimizer = {
         case "AnimatePresence":
           return (await import("@/lib/motion")).AnimatePresence;
         case "useMotionValue":
-          return (await import("@/lib/motion")).useMotionValue;
+          return (await import("framer-motion")).useMotionValue;
         case "useSpring":
-          return (await import("@/lib/motion")).useSpring;
+          return (await import("framer-motion")).useSpring;
         case "useTransform":
-          return (await import("@/lib/motion")).useTransform;
+          return (await import("framer-motion")).useTransform;
         case "useAnimation":
-          return (await import("@/lib/motion")).useAnimation;
+          return (await import("framer-motion")).useAnimation;
         default:
           throw new Error(`Unknown component: ${componentName}`);
       }

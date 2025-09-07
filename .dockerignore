@@ -1,44 +1,14 @@
 Dockerfile
 .dockerignore
 node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.next
-.out
-.dist
-.env*.local
-
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# local env files
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-
-# os generated files
-Thumbs.db
-
+npm-debug.log
+README.md
+.env
+.env.local
+.env.production.local
+.env.local
 .git
 .gitignore
-README.md
-.vscode
-.nyc_output
+.next
+.vercel
+*.md

@@ -8,7 +8,6 @@ export * from "./focus-management";
 export * from "./reduced-motion";
 export * from "./aria-live";
 export * from "./performance";
-export * from "./bundle-optimizer";
 export * from "./types";
 export * from "./config";
 export * from "./hooks";
