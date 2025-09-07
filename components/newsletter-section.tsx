@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { useMotion, motion } from "@/lib/motion"
 import { Check, Mail } from "lucide-react"
 import { Reveal } from "./reveal"
 import { BlurPanel } from "./blur-panel"
@@ -66,25 +66,8 @@ export function NewsletterSection() {
                     />
                   </div>
 
-                  {!isValid && (
-                    <motion.p
-                      className="text-sm text-red-600 text-center"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      Please enter a valid email address
-                    </motion.p>
-                  )}
-
-                  <motion.button
-                    type="submit"
-                    className="w-full bg-neutral-900 text-white py-4 rounded-full font-medium hover:bg-neutral-800 transition-all duration-200"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    Subscribe to Newsletter
-                  </motion.button>
+                  {!isValid && <ErrorMessage />}
+                  <SubmitButton />
                 </form>
               ) : (
                 <motion.div
@@ -116,5 +99,24 @@ export function NewsletterSection() {
         </Reveal>
       </div>
     </section>
+  )
+}
+
+function ErrorMessage() {
+  return (
+    <p className="text-red-500 text-sm text-center">
+      Please enter a valid email address.
+    </p>
+  )
+}
+
+function SubmitButton() {
+  return (
+    <button
+      type="submit"
+      className="w-full bg-neutral-900 text-white py-4 rounded-full font-medium hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2"
+    >
+      Subscribe to Newsletter
+    </button>
   )
 }

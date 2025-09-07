@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "@/lib/motion"
 import Image from "next/image"
 import { X, ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { BlurPanel } from "./blur-panel"

@@ -1,7 +1,6 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { useScrollAnimation, useMotion } from "@/lib/motion"
 import Image from "next/image"
 import { Reveal } from "./reveal"
 
@@ -69,13 +68,12 @@ const collections = [
 ]
 
 export function CollectionStrip() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
+  const { ref: containerRef, style: scrollStyle } = useScrollAnimation({
     offset: ["start end", "end start"],
+    transform: {
+      x: [0, -100]
+    }
   })
-
-  const x = useTransform(scrollYProgress, [0, 1], [0, -100])
 
   const itemWidth = 320 // 320px (w-80) + 32px gap = 352px per item
   const totalWidth = collections.length * (itemWidth + 32) - 32 // subtract last gap
@@ -96,56 +94,86 @@ export function CollectionStrip() {
       </div>
 
       <div className="relative">
-        <motion.div
-          className="flex gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6"
-          style={{ x }}
-          drag="x"
-          dragConstraints={{ left: -maxDrag, right: 0 }}
-          dragElastic={0.1}
-        >
-          {collections.map((collection) => (
-            <motion.div
-              key={collection.id}
-              className="flex-shrink-0 w-64 sm:w-72 lg:w-80 group cursor-pointer"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-            >
-              <div className="relative aspect-[4/5] rounded-xl sm:rounded-2xl overflow-hidden mb-4">
-                <motion.div
-                  className="relative w-full h-full"
-                  whileHover={{ filter: "blur(1px)" }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Image
-                    src={collection.image || "/placeholder.svg"}
-                    alt={collection.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 256px, (max-width: 1024px) 288px, 320px"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
-                </motion.div>
-
-                <div className="absolute inset-0 flex items-center justify-center p-4">
-                  <motion.div
-                    className="text-center text-white"
-                    initial={{ opacity: 0.8 }}
-                    whileHover={{ opacity: 1, scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wider mb-2 leading-tight">{collection.name}</h3>
-                    <p className="text-xs sm:text-sm opacity-90">{collection.count}</p>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+        <CollectionGrid scrollStyle={scrollStyle} maxDrag={maxDrag} />
       </div>
 
       <div className="text-center mt-6 sm:mt-8 px-4">
         <p className="text-xs sm:text-sm text-neutral-500">← Drag to explore collections →</p>
       </div>
     </section>
+  )
+}
+
+function CollectionGrid({ scrollStyle, maxDrag }: { scrollStyle: any; maxDrag: number }) {
+  return (
+    <div
+      className="flex gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6"
+      style={{
+        ...scrollStyle,
+        cursor: 'grab',
+        userSelect: 'none'
+      }}
+    >
+      {collections.map((collection) => (
+        <CollectionCard key={collection.id} collection={collection} />
+      ))}
+    </div>
+  )
+}
+
+function CollectionCard({ collection }: { collection: any }) {
+  const { ref, animationProps, eventHandlers } = useMotion({
+    trigger: 'hover',
+    duration: 300,
+    easing: [0.21, 0.47, 0.32, 0.98]
+  })
+
+  return (
+    <div
+      ref={ref as React.RefObject<HTMLDivElement>}
+      {...eventHandlers}
+      className="flex-shrink-0 w-64 sm:w-72 lg:w-80 group cursor-pointer"
+    >
+      <div className="relative aspect-[4/5] rounded-xl sm:rounded-2xl overflow-hidden mb-4">
+        <CollectionImage collection={collection} />
+        <CollectionOverlay collection={collection} />
+      </div>
+    </div>
+  )
+}
+
+function CollectionImage({ collection }: { collection: any }) {
+  const { ref, eventHandlers } = useMotion({
+    trigger: 'hover',
+    duration: 300
+  })
+
+  return (
+    <div ref={ref as React.RefObject<HTMLDivElement>} {...eventHandlers} className="relative w-full h-full">
+      <Image
+        src={collection.image || "/placeholder.svg"}
+        alt={collection.name}
+        fill
+        className="object-cover"
+        sizes="(max-width: 640px) 256px, (max-width: 1024px) 288px, 320px"
+      />
+      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" />
+    </div>
+  )
+}
+
+function CollectionOverlay({ collection }: { collection: any }) {
+  const { ref, eventHandlers } = useMotion({
+    trigger: 'hover',
+    duration: 300
+  })
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center p-4">
+      <div ref={ref as React.RefObject<HTMLDivElement>} {...eventHandlers} className="text-center text-white">
+        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wider mb-2 leading-tight">{collection.name}</h3>
+        <p className="text-xs sm:text-sm opacity-90">{collection.count}</p>
+      </div>
+    </div>
   )
 }

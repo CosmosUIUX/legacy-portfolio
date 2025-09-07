@@ -2,7 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { motion } from "framer-motion"
+import { motion } from "@/lib/motion"
 import { Reveal } from "@/components/reveal"
 import { EnhancedContactForm } from "@/components/enhanced-contact-form"
 import { Mail, Phone, MapPin, Clock } from "lucide-react"

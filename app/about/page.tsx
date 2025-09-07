@@ -3,7 +3,7 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Testimonials } from "@/components/testimonials"
-import { motion } from "framer-motion"
+import { motion } from "@/lib/motion"
 import { Reveal } from "@/components/reveal"
 import { Award, Users, Clock, Target } from "lucide-react"
 

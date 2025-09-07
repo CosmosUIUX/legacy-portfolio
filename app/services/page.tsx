@@ -3,7 +3,7 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ServiceComparison } from "@/components/service-comparison"
-import { motion } from "framer-motion"
+import { motion } from "@/lib/motion"
 import { Reveal } from "@/components/reveal"
 import { Palette, Building, Hammer, Lightbulb, Ruler, Shield } from "lucide-react"
 

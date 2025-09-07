@@ -1,7 +1,6 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
+import { useScrollAnimation } from "@/lib/motion"
 import Image from "next/image"
 
 interface ParallaxImageProps {
@@ -12,17 +11,16 @@ interface ParallaxImageProps {
 }
 
 export function ParallaxImage({ src, alt, className, parallaxOffset = 12 }: ParallaxImageProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
+  const { ref, style } = useScrollAnimation({
     offset: ["start end", "end start"],
+    transform: {
+      y: [-parallaxOffset, parallaxOffset]
+    }
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], [-parallaxOffset, parallaxOffset])
-
   return (
-    <div ref={ref} className={className}>
-      <motion.div style={{ y }}>
+    <div ref={ref as React.RefObject<HTMLDivElement>} className={className}>
+      <div style={style}>
         <Image
           src={src || "/placeholder.svg"}
           alt={alt}
@@ -30,7 +28,7 @@ export function ParallaxImage({ src, alt, className, parallaxOffset = 12 }: Para
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-      </motion.div>
+      </div>
     </div>
   )
 }

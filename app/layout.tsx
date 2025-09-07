@@ -2,6 +2,8 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import { MotionProvider } from "@/lib/motion/provider"
+import { TransitionLayout } from "@/components/transition-layout"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,7 +56,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
-      <body className="font-sans bg-neutral-50 text-neutral-900 overflow-x-hidden">{children}</body>
+      <body className="font-sans bg-neutral-50 text-neutral-900 overflow-x-hidden">
+        <MotionProvider>
+          <TransitionLayout>
+            {children}
+          </TransitionLayout>
+        </MotionProvider>
+      </body>
     </html>
   )
 }

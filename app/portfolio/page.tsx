@@ -2,7 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { motion } from "framer-motion"
+import { motion } from "@/lib/motion"
 import { Reveal } from "@/components/reveal"
 import { ProjectShowcase } from "@/components/project-showcase"
 import { useState } from "react"
