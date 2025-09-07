@@ -36,7 +36,7 @@ export function NewsletterSection() {
           <div className="max-w-2xl mx-auto">
             <BlurPanel className="p-8 lg:p-12 bg-white/40 backdrop-blur-md grain-texture">
               <div className="text-center mb-8">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 mb-4 whitespace-nowrap text-center">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 mb-4 md:whitespace-nowrap text-center">
                   <AnimatedText text="Stay ahead of " delay={0.2} />
                   <span className="italic font-light">
                     <AnimatedText text="quiet luxury." delay={0.5} />
