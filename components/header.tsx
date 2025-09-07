@@ -45,13 +45,15 @@ export function Header() {
   return (
     <>
       <motion.header
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          "backdrop-blur-md border-b border-white/[0.02]",
-          isScrolled ? "bg-white/[0.02]" : "bg-white/[0.02]",
-        )}
+        className={cn("fixed top-0 left-0 right-0 z-[100] border-b")}
         initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        animate={{
+          y: 0,
+          backgroundColor: isScrolled 
+            ? "rgba(255, 255, 255, 0.95)" 
+            : "rgba(0, 0, 0, 0.1)",
+          backdropFilter: "blur(12px)",
+        }}
         transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
       >
         <div className="container-custom">
