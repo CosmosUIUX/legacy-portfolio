@@ -1,82 +1,87 @@
-// components/header.tsx
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { useMotion as useHoverMotion } from "@/lib/motion/hooks";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import { Menu } from "lucide-react";
-import { ModernSidebar } from "./modern-sidebar";
+import React from "react"
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
+import Image from "next/image"
+import { Menu } from "lucide-react"
+import { ModernSidebar } from "./modern-sidebar"
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  // Scroll-linked state
-  const scrollY = useMotionValue(0);
-  const scrollProgress = useMotionValue(0);
-
-  // Header springs
-  const headerOpacity = useSpring(
-    useTransform(scrollProgress, [0, 0.2], [0.02, 0.08]),
-    { stiffness: 300, damping: 30 },
-  );
-  const headerBlur = useSpring(useTransform(scrollProgress, [0, 1], [8, 16]), {
-    stiffness: 200,
-    damping: 25,
-  });
-  const borderOpacity = useSpring(
-    useTransform(scrollProgress, [0, 0.2], [0.02, 0.1]),
-    { stiffness: 300, damping: 30 },
-  );
-
-  // Logo springs
-  const logoOpacity = useSpring(
-    useTransform(scrollProgress, [0, 0.3], [0.8, 0.9]),
-    { stiffness: 400, damping: 35 },
-  );
-  const logoScale = useSpring(
-    useTransform(scrollProgress, [0, 0.3], [1, 0.95]),
-    { stiffness: 300, damping: 25 },
-  );
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Track scroll
   useEffect(() => {
+    if (!mounted) return
+    
     const handleScroll = () => {
-      const y = window.scrollY;
-      const progress = Math.min(y / 100, 1);
-      scrollY.set(y);
-      scrollProgress.set(progress);
-      setIsScrolled(y > 20);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrollY, scrollProgress]);
-
-  // Hover micro-interactions
-  const menuButtonMotion = useHoverMotion({
-    trigger: "hover",
-    duration: 200,
-    easing: "spring",
-  });
+      setIsScrolled(window.scrollY > 20)
+    }
+    
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [mounted])
 
   // ESC + body scroll lock
   useEffect(() => {
+    if (!mounted) return
+    
     const onEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsMenuOpen(false);
-    };
-    if (isMenuOpen) {
-      document.addEventListener("keydown", onEsc);
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
+      if (e.key === "Escape") setIsMenuOpen(false)
     }
+    
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden"
+      document.addEventListener("keydown", onEsc)
+    } else {
+      document.body.style.overflow = ""
+    }
+    
     return () => {
-      document.removeEventListener("keydown", onEsc);
-      document.body.style.overflow = "unset";
-    };
-  }, [isMenuOpen]);
+      document.body.style.overflow = ""
+      document.removeEventListener("keydown", onEsc)
+    }
+  }, [isMenuOpen, mounted])
+
+  if (!mounted) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-[100] border-b bg-black/10 backdrop-blur-md">
+        <div className="container-custom relative">
+          <div className="flex items-center justify-center h-12 lg:h-16">
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <a href="#" className="flex items-center gap-3 group">
+                <div className="relative">
+                  <Image
+                    src="/legacy-logo.svg"
+                    alt="Legacy Logo"
+                    width={48}
+                    height={48}
+                    className="w-8 h-8 lg:w-12 lg:h-12"
+                  />
+                </div>
+                <div className="flex flex-col leading-none">
+                  <span className="text-lg lg:text-xl font-bold tracking-tight leading-tight text-white">
+                    LEGACY
+                  </span>
+                  <span className="text-xs lg:text-sm font-medium tracking-wide leading-tight text-white/70">
+                    INTERIORS AND DEVELOPERS
+                  </span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+    )
+  }
 
   return (
     <>
@@ -103,75 +108,53 @@ export function Header() {
                 animate={{
                   opacity: 1,
                   scale: 1,
-                  color: "rgb(255, 255, 255)",
                 }}
-                whileHover={{
-                  scale: 1.08,
-                  backgroundColor: "rgba(255, 255, 255, 0.2)",
-                  transition: { type: "spring", stiffness: 400, damping: 17 },
-                }}
-                whileTap={{
-                  scale: 0.92,
-                }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.6, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
+                whileHover={{ scale: 1.1, backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
                 aria-label="Open menu"
-                transition={{
-                  duration: 0.6,
-                  delay: 0.3,
-                  ease: [0.21, 0.47, 0.32, 0.98],
-                }}
               >
-                <Menu size={20} />
+                <Menu className="w-5 h-5 text-white" />
               </motion.button>
             )}
 
-            {/* Logo - Centered */}
+            {/* Logo - Center */}
             <motion.div
               className="flex items-center gap-3 flex-shrink-0"
-              whileHover={{
-                scale: 1.02,
-                transition: { type: "spring", stiffness: 400, damping: 17 },
-              }}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
             >
-              <a
-                href="#"
-                className="flex items-center gap-3 group"
-                aria-label="Legacy Interiors and Developers Home"
-              >
+              <a href="#" className="flex items-center gap-3 group" aria-label="Legacy Interiors and Developers Home">
+                {/* Logo Image */}
                 <motion.div
                   className="relative"
-                  animate={{ opacity: logoOpacity.get(), scale: logoScale.get() }}
                   whileHover={{
                     scale: 1.05,
-                    rotate: [0, -2, 2, 0],
-                    transition: { duration: 0.4, ease: "easeInOut" },
+                    rotate: [0, -5, 5, 0],
                   }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
                 >
                   <Image
                     src="/legacy-logo.svg"
                     alt="Legacy Interiors and Developers Logo"
                     width={48}
                     height={48}
+                    className="w-8 h-8 lg:w-12 lg:h-12 transition-all duration-300"
+                    priority
                   />
                 </motion.div>
 
-                <div className="flex flex-col">
+                {/* Text Logo */}
+                <div className="flex flex-col leading-none">
                   <motion.span
                     className="text-lg lg:text-xl font-bold tracking-tight leading-tight"
                     animate={{
                       color: isScrolled
                         ? "rgb(23, 23, 23)"
                         : "rgb(255, 255, 255)",
-                      scale: isScrolled ? 0.98 : 1,
                     }}
                     transition={{ duration: 0.3 }}
-                    whileHover={{
-                      scale: 1.02,
-                      transition: {
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 17,
-                      },
-                    }}
                   >
                     LEGACY
                   </motion.span>
@@ -181,13 +164,8 @@ export function Header() {
                       color: isScrolled
                         ? "rgb(82, 82, 82)"
                         : "rgba(255, 255, 255, 0.7)",
-                      opacity: isScrolled ? 0.9 : 0.8,
                     }}
                     transition={{ duration: 0.3 }}
-                    whileHover={{
-                      opacity: 1,
-                      transition: { duration: 0.2, ease: "easeOut" },
-                    }}
                   >
                     INTERIORS AND DEVELOPERS
                   </motion.span>
@@ -198,7 +176,8 @@ export function Header() {
         </div>
       </motion.header>
 
+      {/* Modern Sidebar */}
       <ModernSidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </>
-  );
+  )
 }
