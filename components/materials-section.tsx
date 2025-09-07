@@ -152,12 +152,12 @@ export function MaterialsSection() {
       <div className="absolute bottom-8 left-0 right-0 z-10">
         <div className="container-custom">
           <Reveal delay={0.1}>
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex justify-center gap-3 overflow-x-auto pb-2">
               {materials.map((material) => (
                 <motion.button
                   key={material.id}
                   className={cn(
-                    "px-6 py-3 rounded-full font-medium transition-all duration-300 backdrop-blur-md",
+                    "px-6 py-3 rounded-full font-medium transition-all duration-300 backdrop-blur-md whitespace-nowrap flex-shrink-0",
                     activeMaterial === material.id
                       ? "bg-white text-neutral-900"
                       : "bg-black/30 text-white hover:bg-black/40 border border-white/20",
