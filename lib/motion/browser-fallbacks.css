@@ -1,0 +1,284 @@
+/**
+ * CSS fallbacks for browsers with limited Motion.dev support
+ * Provides graceful degradation using CSS-only animations
+ */
+
+/* Browser-specific optimizations */
+.browser-safari {
+  /* Safari-specific optimizations */
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+}
+
+.browser-firefox {
+  /* Firefox-specific optimizations */
+  will-change: transform, opacity;
+}
+
+.browser-edge,
+.browser-chrome {
+  /* Chromium-based browsers can handle all features */
+  transform-style: preserve-3d;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .fallback-animated-text,
+  .fallback-product-card,
+  .fallback-parallax,
+  .fallback-sidebar,
+  .fallback-page-transition {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Fallback animated text */
+.fallback-animated-text {
+  opacity: 0;
+  animation: fadeInText 0.6s ease forwards;
+}
+
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fallback product card animations */
+.fallback-product-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  transform-origin: center;
+}
+
+.fallback-product-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.fallback-product-card:active {
+  transform: scale(0.98);
+}
+
+/* Fallback parallax effects */
+.fallback-parallax {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Fallback sidebar animations */
+.fallback-sidebar {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fallback-sidebar-backdrop {
+  transition: opacity 0.3s ease;
+}
+
+/* Fallback page transitions */
+.fallback-page-transition {
+  animation: fadeInPage 0.4s ease forwards;
+}
+
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Grid fallbacks for older browsers */
+.legacy-css .product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.legacy-css .product-grid > * {
+  flex: 1 1 calc(33.333% - 1rem);
+  min-width: 250px;
+}
+
+/* Backdrop filter fallbacks */
+.legacy-css .backdrop-blur {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: none;
+}
+
+/* Transform fallbacks */
+.legacy-css .transform-3d {
+  transform: none;
+}
+
+.legacy-css .hover-scale:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile-specific optimizations */
+.is-mobile .fallback-parallax {
+  transform: none !important;
+}
+
+.is-mobile .fallback-product-card:hover {
+  transform: none;
+}
+
+.is-mobile .fallback-product-card:active {
+  transform: scale(0.95);
+}
+
+/* iOS-specific fixes */
+.is-ios .fallback-sidebar {
+  -webkit-overflow-scrolling: touch;
+}
+
+.is-ios .fallback-parallax {
+  /* Disable parallax on iOS for better performance */
+  transform: none !important;
+}
+
+/* Android-specific optimizations */
+.is-android .fallback-animated-text {
+  animation-duration: 0.4s;
+}
+
+.is-android .fallback-product-card {
+  transition-duration: 0.15s;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .fallback-product-card:hover {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .fallback-sidebar-backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Print styles */
+@media print {
+  .fallback-animated-text,
+  .fallback-product-card,
+  .fallback-parallax,
+  .fallback-sidebar,
+  .fallback-page-transition {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .fallback-sidebar-backdrop {
+    display: none;
+  }
+}
+
+/* Performance optimizations for low-end devices */
+.supports-modern-css .fallback-product-card {
+  will-change: transform, box-shadow;
+}
+
+.supports-modern-css .fallback-parallax {
+  will-change: transform;
+}
+
+.supports-modern-css .fallback-sidebar {
+  will-change: transform;
+}
+
+/* Remove will-change after animations complete */
+.fallback-product-card:not(:hover) {
+  will-change: auto;
+}
+
+.fallback-parallax:not(.scrolling) {
+  will-change: auto;
+}
+
+/* Accessibility improvements */
+.fallback-animated-text:focus-visible,
+.fallback-product-card:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Skip animations for users who prefer reduced motion */
+.prefers-reduced-motion .fallback-animated-text {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.prefers-reduced-motion .fallback-product-card {
+  transition: box-shadow 0.2s ease;
+}
+
+.prefers-reduced-motion .fallback-product-card:hover {
+  transform: none;
+}
+
+.prefers-reduced-motion .fallback-parallax {
+  transform: none !important;
+}
+
+.prefers-reduced-motion .fallback-sidebar {
+  transition: none;
+}
+
+.prefers-reduced-motion .fallback-page-transition {
+  animation: none;
+  opacity: 1;
+}
+
+/* Loading states for fallback components */
+.fallback-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.fallback-loading .fallback-product-card {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Error states */
+.fallback-error {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.fallback-error::after {
+  content: "⚠️ Animation not supported";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #666;
+  pointer-events: none;
+}
