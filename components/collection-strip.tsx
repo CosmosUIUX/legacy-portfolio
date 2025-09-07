@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useScrollAnimation, useMotion } from "@/lib/motion/hooks";
 import { motion } from "@/lib/motion";
 import Image from "next/image";
@@ -79,6 +80,9 @@ const collections = [
 ];
 
 export function CollectionStrip() {
+  const [maxDrag, setMaxDrag] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  
   const { ref: containerRef, style: scrollStyle } = useScrollAnimation({
     offset: ["start end", "end start"],
     transform: {
@@ -86,11 +90,21 @@ export function CollectionStrip() {
     },
   });
 
-  const itemWidth = 320; // 320px (w-80) + 32px gap = 352px per item
-  const totalWidth = collections.length * (itemWidth + 32) - 32; // subtract last gap
-  const containerWidth =
-    typeof window !== "undefined" ? window.innerWidth : 1200;
-  const maxDrag = Math.max(0, totalWidth - containerWidth + 48); // add padding
+  useEffect(() => {
+    setMounted(true);
+    
+    const calculateMaxDrag = () => {
+      const itemWidth = 320;
+      const totalWidth = collections.length * (itemWidth + 32) - 32;
+      const containerWidth = window.innerWidth;
+      const newMaxDrag = Math.max(0, totalWidth - containerWidth + 48);
+      setMaxDrag(newMaxDrag);
+    };
+
+    calculateMaxDrag();
+    window.addEventListener('resize', calculateMaxDrag);
+    return () => window.removeEventListener('resize', calculateMaxDrag);
+  }, []);
 
   return (
     <section
@@ -112,7 +126,7 @@ export function CollectionStrip() {
       </div>
 
       <div className="relative">
-        <CollectionGrid scrollStyle={scrollStyle} maxDrag={maxDrag} />
+        {mounted && <CollectionGrid scrollStyle={scrollStyle} maxDrag={maxDrag} />}
       </div>
 
       <div className="text-center mt-6 sm:mt-8 px-4">
@@ -139,14 +153,15 @@ function CollectionGrid({
     <motion.div
       className="flex gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6"
       style={{
-        ...scrollStyle,
         cursor: "grab",
         userSelect: "none",
       }}
       drag="x"
       dragConstraints={{ left: -maxDrag, right: 0 }}
-      dragElastic={0.1}
+      dragElastic={0.05}
+      dragMomentum={false}
       whileDrag={{ cursor: "grabbing" }}
+      transition={{ type: "spring", damping: 30, stiffness: 400 }}
     >
       {collections.map((collection) => (
         <CollectionCard key={collection.id} collection={collection} />
